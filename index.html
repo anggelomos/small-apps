@@ -68,6 +68,7 @@
     }
 
     .app-card {
+      position: relative;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -146,13 +147,20 @@
     .badge {
       display: inline-flex;
       width: fit-content;
-      margin-top: 0.7rem;
+      position: absolute;
+      top: 0.82rem;
+      right: 0.82rem;
+      margin-top: 0;
       padding: 0.22rem 0.5rem;
       border-radius: 999px;
       background: #f6f6f6;
       color: #4d4d4d;
       font-size: 0.74rem;
       font-weight: 700;
+    }
+
+    .app-copy {
+      padding-right: 0.2rem;
     }
 
     @media (min-width: 760px) {
@@ -186,7 +194,7 @@
         <span class="icon" aria-hidden="true">
           <span class="bowl"></span>
         </span>
-        <span>
+        <span class="app-copy">
           <strong>Rice Cook</strong>
           <span>Measure raw or cooked rice and get water, oil, salt, and timing.</span>
           <span class="badge">Cooking</span>

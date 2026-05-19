@@ -11,6 +11,9 @@
     const SALT_GRAMS_PER_RAW_GRAM = 0.01;
     const COOK_TIME_MINUTES = "13-15";
     const REST_TIME_MINUTES = "5-10";
+    const ML_PER_TSP = 4.92892;
+    const SALT_GRAMS_PER_TSP = 6;
+    const TSP_STEP = 0.25;
   </script>
   <style>
     :root {
@@ -208,11 +211,44 @@
     }
 
     .result {
+      position: relative;
       min-height: 5.6rem;
       padding: 0.85rem;
       border: 1px solid var(--line);
       border-radius: 0.85rem;
       background: #fbfbfb;
+    }
+
+    .result-button {
+      width: 100%;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      appearance: none;
+    }
+
+    .result-button:hover,
+    .result-button:focus-visible {
+      border-color: rgba(16, 163, 127, 0.45);
+      background: #f7fffc;
+      outline: 0;
+      box-shadow: 0 0 0 3px rgba(16, 163, 127, 0.12);
+    }
+
+    .tap-indicator {
+      position: absolute;
+      top: 0.55rem;
+      right: 0.55rem;
+      padding: 0.16rem 0.38rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: none;
     }
 
     .result strong {
@@ -223,7 +259,7 @@
       overflow-wrap: anywhere;
     }
 
-    .result span {
+    .result > span:not(.tap-indicator) {
       color: var(--muted);
       font-size: 0.82rem;
       font-weight: 800;
@@ -415,14 +451,16 @@
             <span>Cold water</span>
             <strong id="water">680ml</strong>
           </div>
-          <div class="result">
+          <button class="result result-button" id="oilCard" type="button" aria-label="Toggle oil between milliliters and teaspoons">
+            <span class="tap-indicator" id="oilUnitHint">tsp</span>
             <span>Oil</span>
             <strong id="oil">5ml</strong>
-          </div>
-          <div class="result">
+          </button>
+          <button class="result result-button" id="saltCard" type="button" aria-label="Toggle salt between grams and teaspoons">
+            <span class="tap-indicator" id="saltUnitHint">tsp</span>
             <span>Salt</span>
             <strong id="salt">4g</strong>
-          </div>
+          </button>
           <div class="result">
             <span>Time</span>
             <strong id="time">13-15m</strong>
@@ -486,10 +524,18 @@
     const water = document.querySelector("#water");
     const oil = document.querySelector("#oil");
     const salt = document.querySelector("#salt");
+    const oilCard = document.querySelector("#oilCard");
+    const saltCard = document.querySelector("#saltCard");
+    const oilUnitHint = document.querySelector("#oilUnitHint");
+    const saltUnitHint = document.querySelector("#saltUnitHint");
     const time = document.querySelector("#time");
     const amountHelp = document.querySelector("#amountHelp");
 
     let amountType = "raw";
+    let oilUnit = "ml";
+    let saltUnit = "g";
+    let currentOilMl = 0;
+    let currentSaltGrams = 0;
 
     function round(value, step = 1) {
       return Math.round(value / step) * step;
@@ -508,6 +554,24 @@
       return `${formatNumber(round(value, step))}ml`;
     }
 
+    function formatTsp(value) {
+      const rounded = Math.max(TSP_STEP, round(value, TSP_STEP));
+      const whole = Math.floor(rounded);
+      const fraction = Math.round((rounded - whole) / TSP_STEP);
+      const fractions = ["", "1/4", "1/2", "3/4"];
+      const fractionText = fractions[fraction] || "";
+      const amount = whole && fractionText ? `${whole} ${fractionText}` : fractionText || String(whole);
+
+      return `${amount} tsp`;
+    }
+
+    function updateSeasoningUnits() {
+      oil.textContent = oilUnit === "ml" ? formatMl(currentOilMl) : formatTsp(currentOilMl / ML_PER_TSP);
+      salt.textContent = saltUnit === "g" ? formatWeight(currentSaltGrams) : formatTsp(currentSaltGrams / SALT_GRAMS_PER_TSP);
+      oilUnitHint.textContent = oilUnit === "ml" ? "tsp" : "ml";
+      saltUnitHint.textContent = saltUnit === "g" ? "tsp" : "g";
+    }
+
     function calculate() {
       const amount = Number(amountInput.value);
       const isValid = Number.isFinite(amount) && amount > 0;
@@ -518,6 +582,8 @@
         water.textContent = "-";
         oil.textContent = "-";
         salt.textContent = "-";
+        currentOilMl = 0;
+        currentSaltGrams = 0;
         time.textContent = `${COOK_TIME_MINUTES}m`;
         amountHelp.textContent = "Enter an amount greater than zero.";
         return;
@@ -529,8 +595,9 @@
       rawRice.textContent = formatWeight(rawGrams);
       cookedRice.textContent = formatWeight(cookedGrams);
       water.textContent = formatMl(rawGrams * WATER_ML_PER_RAW_GRAM);
-      oil.textContent = formatMl(rawGrams * OIL_ML_PER_RAW_GRAM);
-      salt.textContent = formatWeight(rawGrams * SALT_GRAMS_PER_RAW_GRAM);
+      currentOilMl = rawGrams * OIL_ML_PER_RAW_GRAM;
+      currentSaltGrams = rawGrams * SALT_GRAMS_PER_RAW_GRAM;
+      updateSeasoningUnits();
       time.textContent = `${COOK_TIME_MINUTES}m`;
       amountHelp.textContent = `Simmer for ${COOK_TIME_MINUTES} minutes, then rest covered for ${REST_TIME_MINUTES} minutes.`;
     }
@@ -545,6 +612,14 @@
     amountInput.addEventListener("input", calculate);
     rawButton.addEventListener("click", () => setAmountType("raw"));
     cookedButton.addEventListener("click", () => setAmountType("cooked"));
+    oilCard.addEventListener("click", () => {
+      oilUnit = oilUnit === "ml" ? "tsp" : "ml";
+      updateSeasoningUnits();
+    });
+    saltCard.addEventListener("click", () => {
+      saltUnit = saltUnit === "g" ? "tsp" : "g";
+      updateSeasoningUnits();
+    });
     calculate();
   </script>
 </body>
