@@ -15,16 +15,16 @@
   <style>
     :root {
       color-scheme: light;
-      --bg: #f8f5ee;
+      --bg: #ffffff;
       --surface: #ffffff;
-      --surface-soft: #f1eadf;
-      --ink: #26221d;
-      --muted: #756e64;
-      --line: #ded4c4;
-      --accent: #2f7d5f;
-      --accent-dark: #245f4a;
-      --gold: #c98b2f;
-      --shadow: 0 18px 50px rgba(57, 45, 28, 0.12);
+      --surface-soft: #f7f7f7;
+      --ink: #0a0a0a;
+      --muted: #666666;
+      --line: #e7e7e7;
+      --accent: #10a37f;
+      --accent-dark: #0f7f64;
+      --gold: #8a6d1f;
+      --shadow: 0 18px 44px rgba(0, 0, 0, 0.06);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
@@ -35,9 +35,7 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background:
-        radial-gradient(circle at top left, rgba(255, 255, 255, 0.95), transparent 30rem),
-        linear-gradient(145deg, #faf7f0 0%, var(--bg) 48%, #efe7d9 100%);
+      background: var(--bg);
       color: var(--ink);
     }
 
@@ -71,9 +69,9 @@
       place-items: center;
       width: 3.15rem;
       height: 3.15rem;
-      border-radius: 1rem;
-      background: #fffaf1;
-      box-shadow: inset 0 0 0 1px var(--line), 0 8px 20px rgba(84, 68, 43, 0.11);
+      border-radius: 0.9rem;
+      background: #f0fbf7;
+      box-shadow: inset 0 0 0 1px rgba(16, 163, 127, 0.12);
     }
 
     .bowl {
@@ -109,8 +107,9 @@
 
     h1 {
       font-size: clamp(2rem, 8vw, 4.5rem);
-      line-height: 0.96;
+      line-height: 1;
       letter-spacing: 0;
+      font-weight: 760;
     }
 
     .tagline {
@@ -121,9 +120,9 @@
     }
 
     .panel {
-      background: rgba(255, 255, 255, 0.92);
-      border: 1px solid rgba(222, 212, 196, 0.95);
-      border-radius: 0.5rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 1rem;
       box-shadow: var(--shadow);
     }
 
@@ -154,7 +153,7 @@
       min-height: 4rem;
       padding: 0.45rem 0.75rem;
       border: 1px solid var(--line);
-      border-radius: 0.5rem;
+      border-radius: 0.85rem;
       background: var(--surface);
     }
 
@@ -181,14 +180,14 @@
       gap: 0.35rem;
       padding: 0.35rem;
       border: 1px solid var(--line);
-      border-radius: 0.5rem;
+      border-radius: 0.85rem;
       background: var(--surface-soft);
     }
 
     .toggle button {
       min-height: 3rem;
       border: 0;
-      border-radius: 0.38rem;
+      border-radius: 0.68rem;
       background: transparent;
       color: var(--muted);
       font: inherit;
@@ -199,7 +198,7 @@
     .toggle button[aria-pressed="true"] {
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 8px 18px rgba(47, 125, 95, 0.24);
+      box-shadow: 0 8px 20px rgba(16, 163, 127, 0.22);
     }
 
     .results {
@@ -212,8 +211,8 @@
       min-height: 5.6rem;
       padding: 0.85rem;
       border: 1px solid var(--line);
-      border-radius: 0.5rem;
-      background: #fffaf3;
+      border-radius: 0.85rem;
+      background: #fbfbfb;
     }
 
     .result strong {
@@ -234,9 +233,9 @@
     .hint {
       min-height: 2.75rem;
       padding: 0.8rem 0.95rem;
-      border-radius: 0.5rem;
-      background: #eef6f0;
-      color: #315a48;
+      border-radius: 0.85rem;
+      background: #f0fbf7;
+      color: #0f6f59;
       font-size: 0.95rem;
       line-height: 1.4;
     }
@@ -277,7 +276,7 @@
       align-items: start;
       padding: 0.85rem;
       border: 1px solid var(--line);
-      border-radius: 0.5rem;
+      border-radius: 0.85rem;
       background: var(--surface);
     }
 
@@ -287,8 +286,8 @@
       width: 1.85rem;
       height: 1.85rem;
       border-radius: 50%;
-      background: #f7d79d;
-      color: #4b3514;
+      background: #f0fbf7;
+      color: #0f7f64;
       font-size: 0.9rem;
       font-weight: 900;
     }
@@ -307,10 +306,11 @@
 
     .note {
       padding: 0.9rem 1rem;
+      border: 1px solid #ece4c7;
       border-left: 0.28rem solid var(--gold);
-      border-radius: 0.5rem;
-      background: #fff5df;
-      color: #60471f;
+      border-radius: 0.85rem;
+      background: #fffdf5;
+      color: #5f501d;
       line-height: 1.45;
     }
 
