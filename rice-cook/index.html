@@ -452,14 +452,14 @@
             <strong id="water">680ml</strong>
           </div>
           <button class="result result-button" id="oilCard" type="button" aria-label="Toggle oil between milliliters and teaspoons">
-            <span class="tap-indicator" id="oilUnitHint">tsp</span>
+            <span class="tap-indicator" id="oilUnitHint">ml</span>
             <span>Oil</span>
-            <strong id="oil">5ml</strong>
+            <strong id="oil">1 tsp</strong>
           </button>
           <button class="result result-button" id="saltCard" type="button" aria-label="Toggle salt between grams and teaspoons">
-            <span class="tap-indicator" id="saltUnitHint">tsp</span>
+            <span class="tap-indicator" id="saltUnitHint">g</span>
             <span>Salt</span>
-            <strong id="salt">4g</strong>
+            <strong id="salt">3/4 tsp</strong>
           </button>
           <div class="result">
             <span>Time</span>
@@ -532,8 +532,8 @@
     const amountHelp = document.querySelector("#amountHelp");
 
     let amountType = "raw";
-    let oilUnit = "ml";
-    let saltUnit = "g";
+    let oilUnit = "tsp";
+    let saltUnit = "tsp";
     let currentOilMl = 0;
     let currentSaltGrams = 0;
 
@@ -545,13 +545,24 @@
       return new Intl.NumberFormat("en", { maximumFractionDigits: 1 }).format(value);
     }
 
+    function formatSmallAwareNumber(value, step = 1) {
+      if (value > 0 && value < 1) {
+        return new Intl.NumberFormat("en", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(value);
+      }
+
+      return formatNumber(round(value, step));
+    }
+
     function formatWeight(value) {
-      return `${formatNumber(round(value))}g`;
+      return `${formatSmallAwareNumber(value)}g`;
     }
 
     function formatMl(value) {
       const step = value >= 100 ? 5 : 1;
-      return `${formatNumber(round(value, step))}ml`;
+      return `${formatSmallAwareNumber(value, step)}ml`;
     }
 
     function formatTsp(value) {
