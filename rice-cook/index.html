@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rice Cook</title>
+  <script>
+    const COOKED_YIELD_FACTOR = 2.75;
+    const WATER_ML_PER_RAW_GRAM = 1.7;
+    const OIL_ML_PER_RAW_GRAM = 0.0125;
+    const SALT_GRAMS_PER_RAW_GRAM = 0.01;
+    const COOK_TIME_MINUTES = "13-15";
+    const REST_TIME_MINUTES = "5-10";
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8f5ee;
+      --surface: #ffffff;
+      --surface-soft: #f1eadf;
+      --ink: #26221d;
+      --muted: #756e64;
+      --line: #ded4c4;
+      --accent: #2f7d5f;
+      --accent-dark: #245f4a;
+      --gold: #c98b2f;
+      --shadow: 0 18px 50px rgba(57, 45, 28, 0.12);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.95), transparent 30rem),
+        linear-gradient(145deg, #faf7f0 0%, var(--bg) 48%, #efe7d9 100%);
+      color: var(--ink);
+    }
+
+    main {
+      width: min(100%, 68rem);
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .shell {
+      display: grid;
+      gap: 1rem;
+      padding: 1rem 0 2rem;
+    }
+
+    .hero {
+      display: grid;
+      gap: 1rem;
+      padding: 1.25rem 0 0.25rem;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .mark {
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 3.15rem;
+      height: 3.15rem;
+      border-radius: 1rem;
+      background: #fffaf1;
+      box-shadow: inset 0 0 0 1px var(--line), 0 8px 20px rgba(84, 68, 43, 0.11);
+    }
+
+    .bowl {
+      position: relative;
+      width: 2.1rem;
+      height: 1.4rem;
+      border-radius: 0 0 1.4rem 1.4rem;
+      background: var(--accent);
+      overflow: hidden;
+    }
+
+    .bowl::before {
+      content: "";
+      position: absolute;
+      left: 0.18rem;
+      right: 0.18rem;
+      top: -0.26rem;
+      height: 0.7rem;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 28% 46%, #fff 0 0.11rem, transparent 0.12rem),
+        radial-gradient(circle at 48% 34%, #fff 0 0.12rem, transparent 0.13rem),
+        radial-gradient(circle at 65% 48%, #fff 0 0.1rem, transparent 0.11rem),
+        #f7f0e4;
+      border: 0.12rem solid var(--accent-dark);
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 8vw, 4.5rem);
+      line-height: 0.96;
+      letter-spacing: 0;
+    }
+
+    .tagline {
+      max-width: 42rem;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.4vw, 1.2rem);
+      line-height: 1.5;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(222, 212, 196, 0.95);
+      border-radius: 0.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .calculator {
+      display: grid;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .field {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    label,
+    .label {
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      min-height: 4rem;
+      padding: 0.45rem 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 0.5rem;
+      background: var(--surface);
+    }
+
+    input {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .unit {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.35rem;
+      padding: 0.35rem;
+      border: 1px solid var(--line);
+      border-radius: 0.5rem;
+      background: var(--surface-soft);
+    }
+
+    .toggle button {
+      min-height: 3rem;
+      border: 0;
+      border-radius: 0.38rem;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .toggle button[aria-pressed="true"] {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(47, 125, 95, 0.24);
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+
+    .result {
+      min-height: 5.6rem;
+      padding: 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 0.5rem;
+      background: #fffaf3;
+    }
+
+    .result strong {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: clamp(1.38rem, 7vw, 2.1rem);
+      line-height: 1.05;
+      overflow-wrap: anywhere;
+    }
+
+    .result span {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .hint {
+      min-height: 2.75rem;
+      padding: 0.8rem 0.95rem;
+      border-radius: 0.5rem;
+      background: #eef6f0;
+      color: #315a48;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .guide {
+      display: grid;
+      gap: 0.7rem;
+      padding: 1rem;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    h2 {
+      font-size: 1.18rem;
+      line-height: 1.2;
+    }
+
+    .tiny {
+      color: var(--muted);
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .steps {
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.75rem;
+      align-items: start;
+      padding: 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 0.5rem;
+      background: var(--surface);
+    }
+
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 1.85rem;
+      height: 1.85rem;
+      border-radius: 50%;
+      background: #f7d79d;
+      color: #4b3514;
+      font-size: 0.9rem;
+      font-weight: 900;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 0.2rem;
+      font-size: 1rem;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+
+    .note {
+      padding: 0.9rem 1rem;
+      border-left: 0.28rem solid var(--gold);
+      border-radius: 0.5rem;
+      background: #fff5df;
+      color: #60471f;
+      line-height: 1.45;
+    }
+
+    @media (min-width: 720px) {
+      main {
+        padding: 1.5rem;
+      }
+
+      .shell {
+        grid-template-columns: minmax(0, 1.02fr) minmax(20rem, 0.98fr);
+        align-items: start;
+        gap: 1.25rem;
+        padding-top: 1.5rem;
+      }
+
+      .hero {
+        grid-column: 1 / -1;
+        padding-top: 0.25rem;
+      }
+
+      .calculator,
+      .guide {
+        padding: 1.25rem;
+      }
+    }
+
+    @media (min-width: 980px) {
+      main {
+        padding-top: 2rem;
+      }
+
+      .shell {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero {
+        grid-column: auto;
+        align-self: center;
+        padding: 0 1rem 0 0;
+      }
+
+      .calculator {
+        grid-column: 2;
+      }
+
+      .guide {
+        grid-column: 1 / -1;
+      }
+
+      .steps {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .step {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="shell">
+      <header class="hero">
+        <div class="title-row">
+          <div class="mark" aria-hidden="true">
+            <div class="bowl"></div>
+          </div>
+          <h1>Rice Cook</h1>
+        </div>
+        <p class="tagline">A quick stovetop guide for simple white rice: measure, rinse, cook, rest, and store.</p>
+      </header>
+
+      <section class="calculator panel" aria-labelledby="calculator-title">
+        <h2 id="calculator-title">Calculator</h2>
+
+        <div class="field">
+          <label for="riceAmount">Amount</label>
+          <div class="input-wrap">
+            <input id="riceAmount" type="number" min="1" inputmode="decimal" value="400" aria-describedby="amountHelp">
+            <span class="unit">g</span>
+          </div>
+        </div>
+
+        <div class="field" aria-labelledby="amountTypeLabel">
+          <div class="label" id="amountTypeLabel">This amount is</div>
+          <div class="toggle">
+            <button type="button" id="rawButton" aria-pressed="true">Raw rice</button>
+            <button type="button" id="cookedButton" aria-pressed="false">Cooked rice</button>
+          </div>
+        </div>
+
+        <div class="results" aria-live="polite">
+          <div class="result">
+            <span>Raw rice</span>
+            <strong id="rawRice">400g</strong>
+          </div>
+          <div class="result">
+            <span>Cooked rice</span>
+            <strong id="cookedRice">1100g</strong>
+          </div>
+          <div class="result">
+            <span>Cold water</span>
+            <strong id="water">680ml</strong>
+          </div>
+          <div class="result">
+            <span>Oil</span>
+            <strong id="oil">5ml</strong>
+          </div>
+          <div class="result">
+            <span>Salt</span>
+            <strong id="salt">4g</strong>
+          </div>
+          <div class="result">
+            <span>Time</span>
+            <strong id="time">13-15m</strong>
+          </div>
+        </div>
+
+        <p class="hint" id="amountHelp">Cook time starts once the rice is simmering; use doneness signs as the final check.</p>
+      </section>
+
+      <section class="guide panel" aria-labelledby="guide-title">
+        <div class="section-head">
+          <h2 id="guide-title">Simple steps</h2>
+          <span class="tiny">White rice</span>
+        </div>
+
+        <div class="steps">
+          <article class="step">
+            <span class="step-number">1</span>
+            <div>
+              <strong>Rinse</strong>
+              <p>Wash the rice 2-4 times, until the water is less cloudy.</p>
+            </div>
+          </article>
+
+          <article class="step">
+            <span class="step-number">2</span>
+            <div>
+              <strong>Cook</strong>
+              <p>Add rice, cold water, oil, and salt. Bring to a boil, cover, then lower the heat.</p>
+            </div>
+          </article>
+
+          <article class="step">
+            <span class="step-number">3</span>
+            <div>
+              <strong>Check</strong>
+              <p>Do not stir. It is ready when water is gone, small holes appear, and a grain tastes tender.</p>
+            </div>
+          </article>
+
+          <article class="step">
+            <span class="step-number">4</span>
+            <div>
+              <strong>Rest</strong>
+              <p>Turn off the heat. Keep covered for 5-10 minutes, then fluff and cool before storing.</p>
+            </div>
+          </article>
+        </div>
+
+        <p class="note">For meal prep, let the rice cool before sealing containers. Fridge: 3-4 days. Freezer: several weeks.</p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const amountInput = document.querySelector("#riceAmount");
+    const rawButton = document.querySelector("#rawButton");
+    const cookedButton = document.querySelector("#cookedButton");
+    const rawRice = document.querySelector("#rawRice");
+    const cookedRice = document.querySelector("#cookedRice");
+    const water = document.querySelector("#water");
+    const oil = document.querySelector("#oil");
+    const salt = document.querySelector("#salt");
+    const time = document.querySelector("#time");
+    const amountHelp = document.querySelector("#amountHelp");
+
+    let amountType = "raw";
+
+    function round(value, step = 1) {
+      return Math.round(value / step) * step;
+    }
+
+    function formatNumber(value) {
+      return new Intl.NumberFormat("en", { maximumFractionDigits: 1 }).format(value);
+    }
+
+    function formatWeight(value) {
+      return `${formatNumber(round(value))}g`;
+    }
+
+    function formatMl(value) {
+      const step = value >= 100 ? 5 : 1;
+      return `${formatNumber(round(value, step))}ml`;
+    }
+
+    function calculate() {
+      const amount = Number(amountInput.value);
+      const isValid = Number.isFinite(amount) && amount > 0;
+
+      if (!isValid) {
+        rawRice.textContent = "-";
+        cookedRice.textContent = "-";
+        water.textContent = "-";
+        oil.textContent = "-";
+        salt.textContent = "-";
+        time.textContent = `${COOK_TIME_MINUTES}m`;
+        amountHelp.textContent = "Enter an amount greater than zero.";
+        return;
+      }
+
+      const rawGrams = amountType === "raw" ? amount : amount / COOKED_YIELD_FACTOR;
+      const cookedGrams = rawGrams * COOKED_YIELD_FACTOR;
+
+      rawRice.textContent = formatWeight(rawGrams);
+      cookedRice.textContent = formatWeight(cookedGrams);
+      water.textContent = formatMl(rawGrams * WATER_ML_PER_RAW_GRAM);
+      oil.textContent = formatMl(rawGrams * OIL_ML_PER_RAW_GRAM);
+      salt.textContent = formatWeight(rawGrams * SALT_GRAMS_PER_RAW_GRAM);
+      time.textContent = `${COOK_TIME_MINUTES}m`;
+      amountHelp.textContent = `Simmer for ${COOK_TIME_MINUTES} minutes, then rest covered for ${REST_TIME_MINUTES} minutes.`;
+    }
+
+    function setAmountType(nextType) {
+      amountType = nextType;
+      rawButton.setAttribute("aria-pressed", String(amountType === "raw"));
+      cookedButton.setAttribute("aria-pressed", String(amountType === "cooked"));
+      calculate();
+    }
+
+    amountInput.addEventListener("input", calculate);
+    rawButton.addEventListener("click", () => setAmountType("raw"));
+    cookedButton.addEventListener("click", () => setAmountType("cooked"));
+    calculate();
+  </script>
+</body>
+</html>
