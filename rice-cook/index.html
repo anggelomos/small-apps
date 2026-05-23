@@ -3,7 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Measure raw or cooked rice and get water, oil, salt, and timing.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Small Apps">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Rice Cook</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/assets/app-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
   <script>
     const COOKED_YIELD_FACTOR = 2.75;
     const WATER_ML_PER_RAW_GRAM = 1.7;
@@ -632,6 +640,12 @@
       updateSeasoningUnits();
     });
     calculate();
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js");
+      });
+    }
   </script>
 </body>
 </html>

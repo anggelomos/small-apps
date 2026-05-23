@@ -3,7 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Tiny tools for everyday things.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Small Apps">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Small Apps</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/assets/app-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
   <style>
     :root {
       color-scheme: light;
@@ -171,7 +179,6 @@
       line-height: 1.35;
     }
 
-
     .app-copy {
       padding-right: 0.2rem;
     }
@@ -230,5 +237,12 @@
       </a>
     </section>
   </main>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js");
+      });
+    }
+  </script>
 </body>
 </html>
