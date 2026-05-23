@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Meal Prep</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23fff1e3'/%3E%3Crect x='15' y='16' width='34' height='32' rx='7' fill='%23fff' stroke='%23d96b1a' stroke-width='4'/%3E%3Cpath d='M32 16v32M15 32h34' stroke='%23d96b1a' stroke-width='4'/%3E%3Ccircle cx='23.5' cy='24' r='3.5' fill='%23f08a3c'/%3E%3Ccircle cx='40.5' cy='24' r='3.5' fill='%2315181d'/%3E%3Ccircle cx='23.5' cy='40' r='3.5' fill='%23f08a3c'/%3E%3Ccircle cx='40.5' cy='40' r='3.5' fill='%2315181d'/%3E%3C/svg%3E">
   <script>
     const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     const MEALS = ["Breakfast", "Lunch", "Dinner"];
@@ -90,15 +91,19 @@
       color-scheme: light;
       --bg: #ffffff;
       --surface: #ffffff;
-      --surface-soft: #f7f7f7;
-      --surface-muted: #f3f3f3;
-      --ink: #0a0a0a;
-      --muted: #666666;
-      --line: #e7e7e7;
-      --accent: #10a37f;
-      --accent-dark: #0f7f64;
-      --accent-soft: #f0fbf7;
-      --shadow: 0 18px 44px rgba(0, 0, 0, 0.06);
+      --surface-soft: #fafbfc;
+      --surface-muted: #f4f6f8;
+      --ink: #15181d;
+      --ink-soft: #2e333b;
+      --muted: #7a808a;
+      --muted-strong: #5b6069;
+      --line: #ececef;
+      --line-soft: #f1f2f4;
+      --accent: #f08a3c;
+      --accent-strong: #d96b1a;
+      --accent-soft: #fff1e3;
+      --accent-tint: #fff8f1;
+      --display-font: "Aptos Display", "Segoe UI Variable Display", "SF Pro Display", Inter, ui-sans-serif, system-ui, sans-serif;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
@@ -111,6 +116,8 @@
       min-height: 100vh;
       background: var(--bg);
       color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.005em;
     }
 
     button {
@@ -118,32 +125,32 @@
     }
 
     main {
-      width: min(100%, 76rem);
+      width: min(100%, 72rem);
       margin: 0 auto;
       padding: 1rem;
     }
 
     .shell {
       display: grid;
-      gap: 1rem;
-      padding: 1rem 0 2rem;
+      gap: 1.75rem;
+      padding: 1rem 0 2.5rem;
     }
 
     .hero {
       display: grid;
-      gap: 1rem;
-      padding: 1rem 0 0.25rem;
+      gap: 1.25rem;
+      padding: 0.75rem 0 0;
     }
 
     .hero-main {
       display: grid;
-      gap: 0.8rem;
+      gap: 0.55rem;
     }
 
     .title-row {
       display: flex;
       align-items: center;
-      gap: 0.8rem;
+      gap: 0.85rem;
     }
 
     .mark {
@@ -151,39 +158,41 @@
       display: grid;
       flex: 0 0 auto;
       place-items: center;
-      width: 3.15rem;
-      height: 3.15rem;
-      border-radius: 0.9rem;
+      width: 3rem;
+      height: 3rem;
+      border: 1px solid rgba(217, 107, 26, 0.18);
+      border-radius: 9px;
       background: var(--accent-soft);
-      box-shadow: inset 0 0 0 1px rgba(16, 163, 127, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.58);
     }
 
-    .tray {
-      display: grid;
-      grid-template-columns: repeat(2, 0.72rem);
-      grid-template-rows: repeat(2, 0.56rem);
-      gap: 0.16rem;
-      padding: 0.24rem;
-      border: 0.14rem solid var(--accent-dark);
-      border-radius: 0.45rem;
-      background: #fff;
+    .mark svg {
+      width: 2.05rem;
+      height: 2.05rem;
     }
 
-    .tray span {
-      border-radius: 0.2rem;
+    .mark path,
+    .mark rect,
+    .mark circle {
+      vector-effect: non-scaling-stroke;
+    }
+
+    .spark {
+      position: absolute;
+      right: 0.46rem;
+      top: 0.42rem;
+      width: 0.42rem;
+      height: 0.42rem;
+      border-radius: 50%;
       background: var(--accent);
     }
 
-    .tray span:nth-child(2) {
-      background: #111111;
-    }
-
-    .tray span:nth-child(3) {
-      background: #d9f2ea;
-    }
-
-    .tray span:nth-child(4) {
-      background: #f1f1f1;
+    .spark::after {
+      content: "";
+      position: absolute;
+      inset: -0.16rem;
+      border: 1px solid rgba(240, 138, 60, 0.35);
+      border-radius: inherit;
     }
 
     h1,
@@ -193,84 +202,86 @@
     }
 
     h1 {
-      font-size: clamp(2rem, 8vw, 4.45rem);
-      line-height: 1;
+      font-family: var(--display-font);
+      font-size: clamp(2.1rem, 6vw, 3.35rem);
+      line-height: 1.05;
       letter-spacing: 0;
       font-weight: 760;
+      color: var(--ink);
     }
 
     h2 {
-      font-size: 1.15rem;
-      line-height: 1.2;
+      font-size: 1.35rem;
+      line-height: 1.1;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      color: var(--ink);
     }
 
     .tagline {
-      max-width: 42rem;
-      color: var(--muted);
-      font-size: clamp(1rem, 2.4vw, 1.18rem);
+      max-width: 38rem;
+      color: var(--ink-soft);
+      font-size: 0.98rem;
       line-height: 1.5;
     }
 
     .toggle-wrap {
       display: grid;
-      gap: 0.45rem;
-    }
-
-    .label {
-      color: var(--muted);
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
+      gap: 0.35rem;
+      justify-items: start;
     }
 
     .toggle {
-      display: grid;
+      display: inline-grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.35rem;
-      width: min(100%, 18rem);
-      padding: 0.35rem;
+      gap: 0;
+      padding: 2px;
       border: 1px solid var(--line);
-      border-radius: 0.85rem;
+      border-radius: 4px;
       background: var(--surface-soft);
     }
 
     .toggle button {
-      min-height: 3rem;
+      min-height: 1.85rem;
+      padding: 0 0.95rem;
       border: 0;
-      border-radius: 0.68rem;
+      border-radius: 3px;
       background: transparent;
-      color: var(--muted);
-      font-weight: 800;
+      color: var(--muted-strong);
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0;
       cursor: pointer;
+      transition: background 120ms ease, color 120ms ease;
+    }
+
+    .toggle button:hover {
+      color: var(--ink);
     }
 
     .toggle button[aria-pressed="true"] {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 8px 20px rgba(16, 163, 127, 0.22);
+      background: var(--surface);
+      color: var(--accent-strong);
+      box-shadow: 0 1px 2px rgba(20, 30, 60, 0.08);
     }
 
-    .panel {
-      border: 1px solid var(--line);
-      border-radius: 1rem;
-      background: var(--surface);
-      box-shadow: var(--shadow);
-    }
+    /* ---------- Weekly table ---------- */
 
     .table-panel {
       display: none;
-      overflow: hidden;
     }
 
     .table-scroll {
-      max-height: 72vh;
+      max-height: 76vh;
       overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
     }
 
     table {
       width: 100%;
-      min-width: 61rem;
+      min-width: 60rem;
       border-collapse: separate;
       border-spacing: 0;
       background: var(--surface);
@@ -278,22 +289,33 @@
 
     th,
     td {
-      min-width: 8.35rem;
-      border-right: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
+      min-width: 8.6rem;
       vertical-align: top;
+      border-bottom: 1px solid var(--line-soft);
+      background: var(--surface);
+    }
+
+    th + th,
+    td + td {
+      border-left: 1px solid var(--line-soft);
+    }
+
+    tbody tr:last-child th,
+    tbody tr:last-child td {
+      border-bottom: 0;
     }
 
     th:first-child,
     td:first-child {
-      min-width: 8.2rem;
+      min-width: 7.2rem;
     }
 
     thead th {
       position: sticky;
       top: 0;
       z-index: 4;
-      background: #fbfbfb;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
     }
 
     thead th:first-child {
@@ -305,53 +327,110 @@
       position: sticky;
       left: 0;
       z-index: 3;
-      background: #fbfbfb;
+      background: var(--surface);
+      border-right: 1px solid var(--line);
+      transition: background 120ms ease;
     }
 
     .header-button,
     .cell-button {
       width: 100%;
-      min-height: 4.3rem;
       border: 0;
       background: transparent;
       color: inherit;
       text-align: left;
       cursor: pointer;
+      transition: background 120ms ease, color 120ms ease;
     }
 
     .header-button {
       display: flex;
       align-items: center;
       gap: 0.45rem;
-      padding: 0.8rem;
-      font-weight: 800;
+      padding: 0.6rem 0.95rem;
+      min-height: 2.4rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+    }
+
+    thead .header-button {
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+
+    tbody .header-button {
+      padding: 0.95rem 0.95rem;
+      min-height: 100%;
+      font-size: 1rem;
     }
 
     .corner-label {
-      display: grid;
-      padding: 0.8rem;
-      min-height: 4.3rem;
-      align-items: center;
-      color: var(--muted);
-      font-size: 0.86rem;
-      font-weight: 800;
-      text-transform: uppercase;
+      display: block;
+      padding: 0.55rem 0.85rem;
+      min-height: 2.4rem;
     }
 
     .cell-button {
-      display: grid;
-      gap: 0.32rem;
-      padding: 0.78rem 0.72rem;
-      line-height: 1.34;
+      display: block;
+      padding: 0.85rem 0.95rem 0.95rem;
+      line-height: 1.4;
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+    }
+
+    .cell-list {
+      margin: 0;
+      padding: 0 0 0 1rem;
+      list-style: disc;
+    }
+
+    .cell-list li::marker {
+      color: var(--accent);
+      font-size: 0.85em;
+    }
+
+    .cell-list li {
+      margin-bottom: 0.55rem;
+    }
+
+    .cell-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .cell-list .name {
+      display: block;
+      color: var(--ink);
+      font-weight: 500;
+      letter-spacing: -0.005em;
+    }
+
+    .cell-list .qty {
+      display: block;
+      margin-left: 0.9rem;
+      margin-top: 0.05rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-variant-numeric: tabular-nums;
     }
 
     .cell-button:hover,
     .cell-button:focus-visible,
     .header-button:hover,
     .header-button:focus-visible {
-      background: #f7fffc;
+      background: var(--accent-tint);
       outline: 0;
-      box-shadow: inset 0 0 0 3px rgba(16, 163, 127, 0.12);
+    }
+
+    tbody th:hover,
+    tbody th:focus-within {
+      background: var(--accent-tint);
+    }
+
+    .header-button:hover,
+    .header-button:focus-visible {
+      color: var(--accent-strong);
     }
 
     .cell-button:disabled,
@@ -362,71 +441,55 @@
     .cell-button:disabled:hover,
     .mobile-cell-button:disabled:hover {
       background: transparent;
-      box-shadow: none;
-    }
-
-    .meal-line {
-      display: block;
-      color: var(--ink);
-      font-size: 0.95rem;
-    }
-
-    .meal-line::before {
-      content: "- ";
-      color: var(--muted);
     }
 
     .empty {
       color: var(--muted);
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
 
     .disabled-scope {
-      color: #8a8a8a;
       background: var(--surface-muted);
     }
 
-    .disabled-scope .meal-line,
     .disabled-scope .empty,
     .disabled-scope .header-button,
     .disabled-scope .corner-label,
-    .disabled-scope .cell-button {
-      color: #8a8a8a;
+    .disabled-scope .cell-button,
+    .disabled-scope .cell-list,
+    .disabled-scope .cell-list .name,
+    .disabled-scope .cell-list .qty {
+      color: #b7bbc2;
     }
 
-    .disabled-scope .meal-line {
+    .disabled-scope .cell-list .name,
+    .disabled-scope .cell-list .qty {
       text-decoration: line-through;
-      text-decoration-thickness: 0.08rem;
+      text-decoration-thickness: 1px;
+      text-decoration-color: #c8ccd2;
     }
 
-    .status-dot {
-      display: inline-block;
-      width: 0.48rem;
-      height: 0.48rem;
-      border-radius: 50%;
-      background: var(--accent);
+    .disabled-scope:hover,
+    .disabled-scope:focus-within {
+      background: var(--surface-muted);
     }
 
-    .disabled-scope .status-dot,
-    .header-button[aria-pressed="true"] .status-dot {
-      background: #b9b9b9;
-    }
+    /* ---------- Mobile planner ---------- */
 
     .mobile-planner {
       display: grid;
-      gap: 0.8rem;
+      gap: 0.85rem;
     }
 
     .day-card {
       display: grid;
-      gap: 0.7rem;
-      padding: 0.9rem;
+      gap: 0.85rem;
     }
 
     .day-controls {
       display: grid;
-      grid-template-columns: 3rem 1fr 3rem;
-      gap: 0.55rem;
+      grid-template-columns: 2.6rem 1fr 2.6rem;
+      gap: 0.5rem;
       align-items: center;
     }
 
@@ -438,51 +501,55 @@
       background: var(--surface);
       color: inherit;
       cursor: pointer;
+      transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
     }
 
     .arrow-button {
       display: grid;
       place-items: center;
-      min-height: 3rem;
-      border-radius: 0.82rem;
-      font-size: 1.35rem;
-      font-weight: 900;
+      min-height: 2.6rem;
+      border-radius: 5px;
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--muted-strong);
     }
 
     .day-toggle {
-      display: grid;
-      gap: 0.12rem;
-      min-height: 3rem;
-      padding: 0.55rem;
-      border-radius: 0.82rem;
-      font-weight: 900;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      min-height: 2.6rem;
+      padding: 0 0.95rem;
+      border-radius: 5px;
+      font-weight: 500;
+      letter-spacing: -0.005em;
+      text-align: left;
     }
 
     .day-toggle small {
       color: var(--muted);
       font-size: 0.74rem;
-      font-weight: 800;
+      font-weight: 400;
+      letter-spacing: 0.04em;
     }
 
     .mobile-meals {
       display: grid;
-      gap: 0.55rem;
+      gap: 0.5rem;
       touch-action: pan-y;
     }
 
     .mobile-row {
       display: grid;
-      grid-template-columns: minmax(6.4rem, 0.42fr) minmax(0, 1fr);
-      min-height: 5.1rem;
+      grid-template-columns: minmax(6.2rem, 0.4fr) minmax(0, 1fr);
       overflow: hidden;
       border: 1px solid var(--line);
-      border-radius: 0.85rem;
+      border-radius: 5px;
     }
 
     .mobile-meal-toggle,
     .mobile-cell-button {
-      min-height: 5.1rem;
       border: 0;
       border-radius: 0;
       text-align: left;
@@ -492,17 +559,22 @@
       display: flex;
       align-items: center;
       gap: 0.45rem;
-      padding: 0.78rem;
+      padding: 0.85rem 0.85rem;
       border-right: 1px solid var(--line);
-      background: #fbfbfb;
-      font-weight: 900;
+      background: var(--surface-soft);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted-strong);
     }
 
     .mobile-cell-button {
-      display: grid;
-      gap: 0.28rem;
-      padding: 0.78rem;
-      line-height: 1.34;
+      display: block;
+      padding: 0.85rem 0.95rem;
+      line-height: 1.4;
+      font-size: 0.9rem;
+      color: var(--ink-soft);
     }
 
     .arrow-button:hover,
@@ -513,16 +585,27 @@
     .mobile-meal-toggle:focus-visible,
     .mobile-cell-button:hover,
     .mobile-cell-button:focus-visible {
-      border-color: rgba(16, 163, 127, 0.45);
-      background: #f7fffc;
+      border-color: var(--accent);
+      background: var(--accent-tint);
       outline: 0;
-      box-shadow: 0 0 0 3px rgba(16, 163, 127, 0.12);
+      color: var(--accent-strong);
     }
+
+    .mobile-meal-toggle:hover,
+    .mobile-cell-button:hover {
+      color: var(--ink);
+    }
+
+    .day-toggle[aria-pressed="true"],
+    .mobile-meal-toggle[aria-pressed="true"] {
+      color: #b7bbc2;
+    }
+
+    /* ---------- Ingredients ---------- */
 
     .ingredients {
       display: grid;
-      gap: 0.85rem;
-      padding: 1rem;
+      gap: 0.9rem;
     }
 
     .section-head {
@@ -530,65 +613,69 @@
       align-items: baseline;
       justify-content: space-between;
       gap: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--line);
     }
 
     .tiny {
+      display: block;
+      margin-top: 0.2rem;
       color: var(--muted);
-      font-size: 0.88rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
       white-space: nowrap;
     }
 
     .ingredient-list {
       display: grid;
-      gap: 0.5rem;
+      gap: 0.32rem;
       margin: 0;
-      padding: 0;
-      list-style: none;
+      padding: 0 0 0 1.1rem;
+      list-style: disc;
+      color: var(--muted-strong);
     }
 
     .ingredient-list li {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 1rem;
-      min-height: 3rem;
-      padding: 0.72rem 0.78rem;
-      border: 1px solid var(--line);
-      border-radius: 0.78rem;
-      background: #fbfbfb;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--ink-soft);
     }
 
-    .ingredient-list strong {
-      font-size: 1rem;
+    .ingredient-list li::marker {
+      color: var(--accent);
+      font-size: 0.85em;
     }
 
-    .ingredient-list span {
+    .ingredient-list .qty {
       color: var(--muted);
-      font-weight: 850;
-      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
 
     .empty-note {
-      padding: 0.8rem 0.9rem;
-      border-radius: 0.78rem;
-      background: var(--surface-soft);
+      list-style: none;
+      margin-left: -1.1rem;
+      padding: 0.55rem 0;
       color: var(--muted);
-      line-height: 1.45;
+      font-size: 0.92rem;
     }
 
     @media (min-width: 720px) {
       main {
-        padding: 1.5rem;
+        padding: 1.75rem 1.5rem;
       }
 
       .shell {
-        gap: 1.2rem;
+        gap: 2rem;
         padding-top: 1.5rem;
       }
 
       .hero {
         grid-template-columns: minmax(0, 1fr) auto;
         align-items: end;
+        gap: 1.5rem;
       }
 
       .toggle-wrap {
@@ -602,15 +689,11 @@
       .mobile-planner {
         display: none;
       }
-
-      .ingredients {
-        padding: 1.15rem;
-      }
     }
 
     @media (min-width: 980px) {
       main {
-        padding-top: 2rem;
+        padding-top: 2.5rem;
       }
     }
   </style>
@@ -622,28 +705,30 @@
         <div class="hero-main">
           <div class="title-row">
             <div class="mark" aria-hidden="true">
-              <div class="tray">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
+              <svg viewBox="0 0 48 48" role="img">
+                <rect x="8" y="9" width="32" height="30" rx="7" fill="#fff" stroke="#d96b1a" stroke-width="2.7"></rect>
+                <path d="M24 9v30M8 24h32" fill="none" stroke="#d96b1a" stroke-width="2.7"></path>
+                <circle cx="16" cy="16.5" r="3" fill="#f08a3c"></circle>
+                <circle cx="32" cy="16.5" r="3" fill="#15181d"></circle>
+                <circle cx="16" cy="31.5" r="3" fill="#f08a3c"></circle>
+                <circle cx="32" cy="31.5" r="3" fill="#15181d"></circle>
+              </svg>
+              <span class="spark"></span>
             </div>
             <h1>Meal Prep</h1>
           </div>
           <p class="tagline">Plan the week, tap meals off, and keep the ingredient list aligned with raw or cooked portions.</p>
         </div>
 
-        <div class="toggle-wrap" aria-labelledby="modeLabel">
-          <div class="label" id="modeLabel">Values</div>
-          <div class="toggle">
+        <div class="toggle-wrap">
+          <div class="toggle" role="group" aria-label="Amount mode">
             <button type="button" id="rawButton" aria-pressed="true">Raw</button>
             <button type="button" id="cookedButton" aria-pressed="false">Cooked</button>
           </div>
         </div>
       </header>
 
-      <section class="table-panel panel" aria-label="Weekly meal prep table">
+      <section class="table-panel" aria-label="Weekly meal prep table">
         <div class="table-scroll">
           <table>
             <thead id="tableHead"></thead>
@@ -653,7 +738,7 @@
       </section>
 
       <section class="mobile-planner" aria-label="Mobile meal prep planner">
-        <div class="day-card panel">
+        <div class="day-card">
           <div class="day-controls">
             <button class="arrow-button" id="prevDay" type="button" aria-label="Previous day">&#8249;</button>
             <button class="day-toggle" id="mobileDayToggle" type="button" aria-pressed="false"></button>
@@ -663,10 +748,12 @@
         </div>
       </section>
 
-      <section class="ingredients panel" aria-labelledby="ingredientsTitle">
+      <section class="ingredients" aria-labelledby="ingredientsTitle">
         <div class="section-head">
-          <h2 id="ingredientsTitle">Ingredients</h2>
-          <span class="tiny" id="ingredientMode">Raw totals</span>
+          <div>
+            <h2 id="ingredientsTitle">Week Ingredients</h2>
+            <span class="tiny" id="ingredientMode">Raw totals</span>
+          </div>
         </div>
         <ul class="ingredient-list" id="ingredientList"></ul>
       </section>
@@ -687,15 +774,18 @@
 
     let amountMode = "raw";
     let currentDayIndex = 0;
-    const disabledDays = new Set();
-    const disabledMeals = new Set();
     const disabledCells = new Set();
 
     function cellKey(day, meal) {
       return `${day}::${meal}`;
     }
 
-    function formatAmount(value, unit) {
+    function capitalizeFirst(text) {
+      if (!text) return text;
+      return text.charAt(0).toUpperCase() + text.slice(1);
+    }
+
+    function formatAmountValue(value, unit) {
       const rounded = Math.round(value);
 
       if (unit === "unit") {
@@ -706,15 +796,13 @@
       return `${rounded}${unit}`;
     }
 
-    function formatIngredientLine(item, mode) {
+    function formatCellLine(item, mode) {
       const ingredient = INGREDIENTS[item.id];
       const amount = item.amount[mode];
+      const qty = formatAmountValue(amount, ingredient.unit);
+      const name = capitalizeFirst(ingredient.label[mode]);
 
-      if (ingredient.unit === "unit") {
-        return `${Math.round(amount)} ${ingredient.label[mode]}`;
-      }
-
-      return `${formatAmount(amount, ingredient.unit)} ${ingredient.label[mode]}`;
+      return `<li><span class="name">${name}</span><span class="qty">${qty}</span></li>`;
     }
 
     function getRecipe(day, meal) {
@@ -723,11 +811,38 @@
     }
 
     function isCellDisabled(day, meal) {
-      return disabledDays.has(day) || disabledMeals.has(meal) || disabledCells.has(cellKey(day, meal));
+      return disabledCells.has(cellKey(day, meal));
     }
 
-    function getCellClasses(day, meal) {
-      return isCellDisabled(day, meal) ? "disabled-scope" : "";
+    function getRealCellKeysForDay(day) {
+      return MEALS
+        .filter((meal) => getRecipe(day, meal))
+        .map((meal) => cellKey(day, meal));
+    }
+
+    function getRealCellKeysForMeal(meal) {
+      return DAYS
+        .filter((day) => getRecipe(day, meal))
+        .map((day) => cellKey(day, meal));
+    }
+
+    function areAllKeysDisabled(keys) {
+      return keys.length > 0 && keys.every((key) => disabledCells.has(key));
+    }
+
+    function setKeysDisabled(keys, shouldDisable) {
+      keys.forEach((key) => {
+        if (shouldDisable) {
+          disabledCells.add(key);
+        } else {
+          disabledCells.delete(key);
+        }
+      });
+    }
+
+    function toggleScope(keys) {
+      const shouldDisable = !areAllKeysDisabled(keys);
+      setKeysDisabled(keys, shouldDisable);
     }
 
     function validateMealData() {
@@ -799,22 +914,23 @@
 
     function renderRecipeLines(recipe) {
       if (!recipe) {
-        return '<span class="empty">-</span>';
+        return '<span class="empty">—</span>';
       }
 
-      return recipe.ingredients
-        .map((item) => `<span class="meal-line">${formatIngredientLine(item, amountMode)}</span>`)
+      const items = recipe.ingredients
+        .map((item) => formatCellLine(item, amountMode))
         .join("");
+
+      return `<ul class="cell-list">${items}</ul>`;
     }
 
     function renderTable() {
       const headerCells = DAYS.map((day) => {
-        const isDisabled = disabledDays.has(day);
+        const isDisabled = areAllKeysDisabled(getRealCellKeysForDay(day));
 
         return `
           <th class="${isDisabled ? "disabled-scope" : ""}" scope="col">
             <button class="header-button" type="button" data-day="${day}" aria-pressed="${isDisabled}">
-              <span class="status-dot" aria-hidden="true"></span>
               <span>${day}</span>
             </button>
           </th>
@@ -823,13 +939,13 @@
 
       tableHead.innerHTML = `
         <tr>
-          <th scope="col"><span class="corner-label">Meal / Day</span></th>
+          <th scope="col"><span class="corner-label"></span></th>
           ${headerCells}
         </tr>
       `;
 
       tableBody.innerHTML = MEALS.map((meal) => {
-        const mealDisabled = disabledMeals.has(meal);
+        const mealDisabled = areAllKeysDisabled(getRealCellKeysForMeal(meal));
         const cells = DAYS.map((day) => {
           const recipe = getRecipe(day, meal);
           const disabled = isCellDisabled(day, meal);
@@ -847,7 +963,6 @@
           <tr>
             <th class="${mealDisabled ? "disabled-scope" : ""}" scope="row">
               <button class="header-button" type="button" data-meal="${meal}" aria-pressed="${mealDisabled}">
-                <span class="status-dot" aria-hidden="true"></span>
                 <span>${meal}</span>
               </button>
             </th>
@@ -859,21 +974,20 @@
 
     function renderMobile() {
       const day = DAYS[currentDayIndex];
-      const isDayDisabled = disabledDays.has(day);
+      const isDayDisabled = areAllKeysDisabled(getRealCellKeysForDay(day));
 
       mobileDayToggle.setAttribute("aria-pressed", String(isDayDisabled));
       mobileDayToggle.classList.toggle("disabled-scope", isDayDisabled);
-      mobileDayToggle.innerHTML = `<span>${day}</span><small>${currentDayIndex + 1} of ${DAYS.length}</small>`;
+      mobileDayToggle.innerHTML = `<span>${day}</span><small>${currentDayIndex + 1} / ${DAYS.length}</small>`;
 
       mobileMeals.innerHTML = MEALS.map((meal) => {
         const recipe = getRecipe(day, meal);
-        const mealDisabled = disabledMeals.has(meal);
+        const mealDisabled = areAllKeysDisabled(getRealCellKeysForMeal(meal));
         const cellDisabled = isCellDisabled(day, meal);
 
         return `
           <div class="mobile-row ${cellDisabled ? "disabled-scope" : ""}">
             <button class="mobile-meal-toggle" type="button" data-meal="${meal}" aria-pressed="${mealDisabled}">
-              <span class="status-dot" aria-hidden="true"></span>
               <span>${meal}</span>
             </button>
             <button class="mobile-cell-button" type="button" data-day="${day}" data-meal="${meal}" aria-pressed="${cellDisabled}" ${recipe ? "" : 'disabled aria-label="Empty meal slot"'}>
@@ -919,13 +1033,10 @@
 
       ingredientList.innerHTML = totals.map((total) => {
         const ingredient = INGREDIENTS[total.id];
+        const name = capitalizeFirst(ingredient.label[amountMode]);
+        const qty = formatAmountValue(total.amount, total.unit);
 
-        return `
-          <li>
-            <strong>${ingredient.label[amountMode]}</strong>
-            <span>${formatAmount(total.amount, total.unit)}</span>
-          </li>
-        `;
+        return `<li>${name} <span class="qty">— ${qty}</span></li>`;
       }).join("");
     }
 
@@ -935,14 +1046,6 @@
       renderTable();
       renderMobile();
       renderIngredients();
-    }
-
-    function toggleSetValue(set, value) {
-      if (set.has(value)) {
-        set.delete(value);
-      } else {
-        set.add(value);
-      }
     }
 
     function changeDay(direction) {
@@ -967,7 +1070,7 @@
         return;
       }
 
-      toggleSetValue(disabledDays, button.dataset.day);
+      toggleScope(getRealCellKeysForDay(button.dataset.day));
       render();
     });
 
@@ -976,7 +1079,7 @@
       const cell = event.target.closest("td [data-day][data-meal]");
 
       if (mealHeader) {
-        toggleSetValue(disabledMeals, mealHeader.dataset.meal);
+        toggleScope(getRealCellKeysForMeal(mealHeader.dataset.meal));
         render();
         return;
       }
@@ -986,7 +1089,7 @@
           return;
         }
 
-        toggleSetValue(disabledCells, cellKey(cell.dataset.day, cell.dataset.meal));
+        toggleScope([cellKey(cell.dataset.day, cell.dataset.meal)]);
         render();
       }
     });
@@ -995,7 +1098,7 @@
     nextDay.addEventListener("click", () => changeDay(1));
 
     mobileDayToggle.addEventListener("click", () => {
-      toggleSetValue(disabledDays, DAYS[currentDayIndex]);
+      toggleScope(getRealCellKeysForDay(DAYS[currentDayIndex]));
       render();
     });
 
@@ -1004,7 +1107,7 @@
       const cellButton = event.target.closest(".mobile-cell-button");
 
       if (mealButton) {
-        toggleSetValue(disabledMeals, mealButton.dataset.meal);
+        toggleScope(getRealCellKeysForMeal(mealButton.dataset.meal));
         render();
         return;
       }
@@ -1014,7 +1117,7 @@
           return;
         }
 
-        toggleSetValue(disabledCells, cellKey(cellButton.dataset.day, cellButton.dataset.meal));
+        toggleScope([cellKey(cellButton.dataset.day, cellButton.dataset.meal)]);
         render();
       }
     });
