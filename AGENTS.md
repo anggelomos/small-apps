@@ -12,7 +12,7 @@ This repo hosts small public apps for personal use. Each app must live in its ow
 ## Style
 - Use a clean, modern, mostly white aesthetic: black text, soft gray borders, subtle shadows, and restrained accent color.
 - Favor mobile-first layouts, generous spacing, large touch targets, and readable numeric outputs.
-- Dashboard app cards should be square grid tiles with an icon, short title, compact description, and optional small badge.
+- Dashboard app cards should be square grid tiles with an icon, short title, and compact description.
 - App pages should feel utilitarian and calm: concise copy, clear sections, no dense explanations.
 - Current accent pattern: green `#10a37f`, soft green `#f0fbf7`, border `#e7e7e7`, muted text `#666`.
 
