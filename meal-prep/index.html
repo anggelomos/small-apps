@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Meal Prep</title>
+  <script>
+    const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const MEALS = ["Breakfast", "Lunch", "Dinner"];
+
+    const INGREDIENTS = {
+      eggs: { label: { raw: "boiled eggs", cooked: "boiled eggs" }, unit: "unit" },
+      greekYogurt: { label: { raw: "Greek yogurt", cooked: "Greek yogurt" }, unit: "g" },
+      banana: { label: { raw: "banana", cooked: "banana" }, unit: "unit" },
+      rice: { label: { raw: "raw rice", cooked: "rice" }, unit: "g" },
+      chicken: { label: { raw: "raw chicken", cooked: "chicken" }, unit: "g" },
+      beef: { label: { raw: "raw beef", cooked: "beef" }, unit: "g" },
+      fish: { label: { raw: "raw fish", cooked: "fish" }, unit: "g" },
+      vegetables: { label: { raw: "vegetables", cooked: "vegetables" }, unit: "g" }
+    };
+
+    const RECIPES = {
+      breakfast: {
+        label: "Breakfast",
+        ingredients: [
+          { id: "eggs", amount: { raw: 2, cooked: 2 } },
+          { id: "greekYogurt", amount: { raw: 100, cooked: 100 } },
+          { id: "banana", amount: { raw: 1, cooked: 1 } }
+        ]
+      },
+      chickenLunch: {
+        label: "Chicken lunch",
+        ingredients: [
+          { id: "rice", amount: { raw: 33, cooked: 100 } },
+          { id: "chicken", amount: { raw: 340, cooked: 250 } },
+          { id: "vegetables", amount: { raw: 100, cooked: 100 } }
+        ]
+      },
+      beefLunch: {
+        label: "Beef lunch",
+        ingredients: [
+          { id: "rice", amount: { raw: 33, cooked: 100 } },
+          { id: "beef", amount: { raw: 350, cooked: 250 } },
+          { id: "vegetables", amount: { raw: 100, cooked: 100 } }
+        ]
+      },
+      fishLunch: {
+        label: "Fish lunch",
+        ingredients: [
+          { id: "rice", amount: { raw: 33, cooked: 100 } },
+          { id: "fish", amount: { raw: 315, cooked: 250 } },
+          { id: "vegetables", amount: { raw: 100, cooked: 100 } }
+        ]
+      },
+      chickenDinner: {
+        label: "Chicken dinner",
+        ingredients: [
+          { id: "rice", amount: { raw: 33, cooked: 100 } },
+          { id: "chicken", amount: { raw: 270, cooked: 200 } }
+        ]
+      },
+      beefDinner: {
+        label: "Beef dinner",
+        ingredients: [
+          { id: "rice", amount: { raw: 33, cooked: 100 } },
+          { id: "beef", amount: { raw: 280, cooked: 200 } }
+        ]
+      },
+      fishDinner: {
+        label: "Fish dinner",
+        ingredients: [
+          { id: "rice", amount: { raw: 33, cooked: 100 } },
+          { id: "fish", amount: { raw: 250, cooked: 200 } }
+        ]
+      }
+    };
+
+    const WEEK_PLAN = {
+      Monday: { Breakfast: "breakfast", Lunch: "chickenLunch", Dinner: "chickenDinner" },
+      Tuesday: { Breakfast: "breakfast", Lunch: "chickenLunch", Dinner: "chickenDinner" },
+      Wednesday: { Breakfast: "breakfast", Lunch: "chickenLunch", Dinner: "chickenDinner" },
+      Thursday: { Breakfast: "breakfast", Lunch: "beefLunch", Dinner: "beefDinner" },
+      Friday: { Breakfast: "breakfast", Lunch: "fishLunch", Dinner: "fishDinner" },
+      Saturday: { Breakfast: null, Lunch: null, Dinner: "beefDinner" },
+      Sunday: { Breakfast: "breakfast", Lunch: "fishLunch", Dinner: "fishDinner" }
+    };
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --surface-soft: #f7f7f7;
+      --surface-muted: #f3f3f3;
+      --ink: #0a0a0a;
+      --muted: #666666;
+      --line: #e7e7e7;
+      --accent: #10a37f;
+      --accent-dark: #0f7f64;
+      --accent-soft: #f0fbf7;
+      --shadow: 0 18px 44px rgba(0, 0, 0, 0.06);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    main {
+      width: min(100%, 76rem);
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .shell {
+      display: grid;
+      gap: 1rem;
+      padding: 1rem 0 2rem;
+    }
+
+    .hero {
+      display: grid;
+      gap: 1rem;
+      padding: 1rem 0 0.25rem;
+    }
+
+    .hero-main {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .mark {
+      position: relative;
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 3.15rem;
+      height: 3.15rem;
+      border-radius: 0.9rem;
+      background: var(--accent-soft);
+      box-shadow: inset 0 0 0 1px rgba(16, 163, 127, 0.12);
+    }
+
+    .tray {
+      display: grid;
+      grid-template-columns: repeat(2, 0.72rem);
+      grid-template-rows: repeat(2, 0.56rem);
+      gap: 0.16rem;
+      padding: 0.24rem;
+      border: 0.14rem solid var(--accent-dark);
+      border-radius: 0.45rem;
+      background: #fff;
+    }
+
+    .tray span {
+      border-radius: 0.2rem;
+      background: var(--accent);
+    }
+
+    .tray span:nth-child(2) {
+      background: #111111;
+    }
+
+    .tray span:nth-child(3) {
+      background: #d9f2ea;
+    }
+
+    .tray span:nth-child(4) {
+      background: #f1f1f1;
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 8vw, 4.45rem);
+      line-height: 1;
+      letter-spacing: 0;
+      font-weight: 760;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      line-height: 1.2;
+    }
+
+    .tagline {
+      max-width: 42rem;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.4vw, 1.18rem);
+      line-height: 1.5;
+    }
+
+    .toggle-wrap {
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.35rem;
+      width: min(100%, 18rem);
+      padding: 0.35rem;
+      border: 1px solid var(--line);
+      border-radius: 0.85rem;
+      background: var(--surface-soft);
+    }
+
+    .toggle button {
+      min-height: 3rem;
+      border: 0;
+      border-radius: 0.68rem;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .toggle button[aria-pressed="true"] {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(16, 163, 127, 0.22);
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .table-panel {
+      display: none;
+      overflow: hidden;
+    }
+
+    .table-scroll {
+      max-height: 72vh;
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 61rem;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: var(--surface);
+    }
+
+    th,
+    td {
+      min-width: 8.35rem;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th:first-child,
+    td:first-child {
+      min-width: 8.2rem;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      background: #fbfbfb;
+    }
+
+    thead th:first-child {
+      left: 0;
+      z-index: 6;
+    }
+
+    tbody th {
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      background: #fbfbfb;
+    }
+
+    .header-button,
+    .cell-button {
+      width: 100%;
+      min-height: 4.3rem;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .header-button {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.8rem;
+      font-weight: 800;
+    }
+
+    .corner-label {
+      display: grid;
+      padding: 0.8rem;
+      min-height: 4.3rem;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .cell-button {
+      display: grid;
+      gap: 0.32rem;
+      padding: 0.78rem 0.72rem;
+      line-height: 1.34;
+    }
+
+    .cell-button:hover,
+    .cell-button:focus-visible,
+    .header-button:hover,
+    .header-button:focus-visible {
+      background: #f7fffc;
+      outline: 0;
+      box-shadow: inset 0 0 0 3px rgba(16, 163, 127, 0.12);
+    }
+
+    .cell-button:disabled,
+    .mobile-cell-button:disabled {
+      cursor: default;
+    }
+
+    .cell-button:disabled:hover,
+    .mobile-cell-button:disabled:hover {
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .meal-line {
+      display: block;
+      color: var(--ink);
+      font-size: 0.95rem;
+    }
+
+    .meal-line::before {
+      content: "- ";
+      color: var(--muted);
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .disabled-scope {
+      color: #8a8a8a;
+      background: var(--surface-muted);
+    }
+
+    .disabled-scope .meal-line,
+    .disabled-scope .empty,
+    .disabled-scope .header-button,
+    .disabled-scope .corner-label,
+    .disabled-scope .cell-button {
+      color: #8a8a8a;
+    }
+
+    .disabled-scope .meal-line {
+      text-decoration: line-through;
+      text-decoration-thickness: 0.08rem;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 0.48rem;
+      height: 0.48rem;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .disabled-scope .status-dot,
+    .header-button[aria-pressed="true"] .status-dot {
+      background: #b9b9b9;
+    }
+
+    .mobile-planner {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .day-card {
+      display: grid;
+      gap: 0.7rem;
+      padding: 0.9rem;
+    }
+
+    .day-controls {
+      display: grid;
+      grid-template-columns: 3rem 1fr 3rem;
+      gap: 0.55rem;
+      align-items: center;
+    }
+
+    .arrow-button,
+    .day-toggle,
+    .mobile-meal-toggle,
+    .mobile-cell-button {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .arrow-button {
+      display: grid;
+      place-items: center;
+      min-height: 3rem;
+      border-radius: 0.82rem;
+      font-size: 1.35rem;
+      font-weight: 900;
+    }
+
+    .day-toggle {
+      display: grid;
+      gap: 0.12rem;
+      min-height: 3rem;
+      padding: 0.55rem;
+      border-radius: 0.82rem;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .day-toggle small {
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+
+    .mobile-meals {
+      display: grid;
+      gap: 0.55rem;
+      touch-action: pan-y;
+    }
+
+    .mobile-row {
+      display: grid;
+      grid-template-columns: minmax(6.4rem, 0.42fr) minmax(0, 1fr);
+      min-height: 5.1rem;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 0.85rem;
+    }
+
+    .mobile-meal-toggle,
+    .mobile-cell-button {
+      min-height: 5.1rem;
+      border: 0;
+      border-radius: 0;
+      text-align: left;
+    }
+
+    .mobile-meal-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.78rem;
+      border-right: 1px solid var(--line);
+      background: #fbfbfb;
+      font-weight: 900;
+    }
+
+    .mobile-cell-button {
+      display: grid;
+      gap: 0.28rem;
+      padding: 0.78rem;
+      line-height: 1.34;
+    }
+
+    .arrow-button:hover,
+    .arrow-button:focus-visible,
+    .day-toggle:hover,
+    .day-toggle:focus-visible,
+    .mobile-meal-toggle:hover,
+    .mobile-meal-toggle:focus-visible,
+    .mobile-cell-button:hover,
+    .mobile-cell-button:focus-visible {
+      border-color: rgba(16, 163, 127, 0.45);
+      background: #f7fffc;
+      outline: 0;
+      box-shadow: 0 0 0 3px rgba(16, 163, 127, 0.12);
+    }
+
+    .ingredients {
+      display: grid;
+      gap: 0.85rem;
+      padding: 1rem;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .tiny {
+      color: var(--muted);
+      font-size: 0.88rem;
+      white-space: nowrap;
+    }
+
+    .ingredient-list {
+      display: grid;
+      gap: 0.5rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .ingredient-list li {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 3rem;
+      padding: 0.72rem 0.78rem;
+      border: 1px solid var(--line);
+      border-radius: 0.78rem;
+      background: #fbfbfb;
+    }
+
+    .ingredient-list strong {
+      font-size: 1rem;
+    }
+
+    .ingredient-list span {
+      color: var(--muted);
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .empty-note {
+      padding: 0.8rem 0.9rem;
+      border-radius: 0.78rem;
+      background: var(--surface-soft);
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    @media (min-width: 720px) {
+      main {
+        padding: 1.5rem;
+      }
+
+      .shell {
+        gap: 1.2rem;
+        padding-top: 1.5rem;
+      }
+
+      .hero {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+      }
+
+      .toggle-wrap {
+        justify-items: end;
+      }
+
+      .table-panel {
+        display: block;
+      }
+
+      .mobile-planner {
+        display: none;
+      }
+
+      .ingredients {
+        padding: 1.15rem;
+      }
+    }
+
+    @media (min-width: 980px) {
+      main {
+        padding-top: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="shell">
+      <header class="hero">
+        <div class="hero-main">
+          <div class="title-row">
+            <div class="mark" aria-hidden="true">
+              <div class="tray">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+            <h1>Meal Prep</h1>
+          </div>
+          <p class="tagline">Plan the week, tap meals off, and keep the ingredient list aligned with raw or cooked portions.</p>
+        </div>
+
+        <div class="toggle-wrap" aria-labelledby="modeLabel">
+          <div class="label" id="modeLabel">Values</div>
+          <div class="toggle">
+            <button type="button" id="rawButton" aria-pressed="true">Raw</button>
+            <button type="button" id="cookedButton" aria-pressed="false">Cooked</button>
+          </div>
+        </div>
+      </header>
+
+      <section class="table-panel panel" aria-label="Weekly meal prep table">
+        <div class="table-scroll">
+          <table>
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="mobile-planner" aria-label="Mobile meal prep planner">
+        <div class="day-card panel">
+          <div class="day-controls">
+            <button class="arrow-button" id="prevDay" type="button" aria-label="Previous day">&#8249;</button>
+            <button class="day-toggle" id="mobileDayToggle" type="button" aria-pressed="false"></button>
+            <button class="arrow-button" id="nextDay" type="button" aria-label="Next day">&#8250;</button>
+          </div>
+          <div class="mobile-meals" id="mobileMeals"></div>
+        </div>
+      </section>
+
+      <section class="ingredients panel" aria-labelledby="ingredientsTitle">
+        <div class="section-head">
+          <h2 id="ingredientsTitle">Ingredients</h2>
+          <span class="tiny" id="ingredientMode">Raw totals</span>
+        </div>
+        <ul class="ingredient-list" id="ingredientList"></ul>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const tableHead = document.querySelector("#tableHead");
+    const tableBody = document.querySelector("#tableBody");
+    const rawButton = document.querySelector("#rawButton");
+    const cookedButton = document.querySelector("#cookedButton");
+    const ingredientList = document.querySelector("#ingredientList");
+    const ingredientMode = document.querySelector("#ingredientMode");
+    const prevDay = document.querySelector("#prevDay");
+    const nextDay = document.querySelector("#nextDay");
+    const mobileDayToggle = document.querySelector("#mobileDayToggle");
+    const mobileMeals = document.querySelector("#mobileMeals");
+
+    let amountMode = "raw";
+    let currentDayIndex = 0;
+    const disabledDays = new Set();
+    const disabledMeals = new Set();
+    const disabledCells = new Set();
+
+    function cellKey(day, meal) {
+      return `${day}::${meal}`;
+    }
+
+    function formatAmount(value, unit) {
+      const rounded = Math.round(value);
+
+      if (unit === "unit") {
+        const label = rounded === 1 ? "unit" : "units";
+        return `${rounded} ${label}`;
+      }
+
+      return `${rounded}${unit}`;
+    }
+
+    function formatIngredientLine(item, mode) {
+      const ingredient = INGREDIENTS[item.id];
+      const amount = item.amount[mode];
+
+      if (ingredient.unit === "unit") {
+        return `${Math.round(amount)} ${ingredient.label[mode]}`;
+      }
+
+      return `${formatAmount(amount, ingredient.unit)} ${ingredient.label[mode]}`;
+    }
+
+    function getRecipe(day, meal) {
+      const recipeId = WEEK_PLAN[day]?.[meal];
+      return recipeId ? RECIPES[recipeId] : null;
+    }
+
+    function isCellDisabled(day, meal) {
+      return disabledDays.has(day) || disabledMeals.has(meal) || disabledCells.has(cellKey(day, meal));
+    }
+
+    function getCellClasses(day, meal) {
+      return isCellDisabled(day, meal) ? "disabled-scope" : "";
+    }
+
+    function validateMealData() {
+      const messages = [];
+      const expectedDays = new Set(DAYS);
+      const expectedMeals = new Set(MEALS);
+
+      Object.keys(WEEK_PLAN).forEach((day) => {
+        if (!expectedDays.has(day)) {
+          messages.push(`Unexpected day in WEEK_PLAN: ${day}`);
+        }
+      });
+
+      DAYS.forEach((day) => {
+        const plan = WEEK_PLAN[day];
+
+        if (!plan) {
+          messages.push(`Missing day in WEEK_PLAN: ${day}`);
+          return;
+        }
+
+        Object.keys(plan).forEach((meal) => {
+          if (!expectedMeals.has(meal)) {
+            messages.push(`Unexpected meal in ${day}: ${meal}`);
+          }
+        });
+
+        MEALS.forEach((meal) => {
+          if (!(meal in plan)) {
+            messages.push(`Missing ${meal} slot for ${day}`);
+            return;
+          }
+
+          const recipeId = plan[meal];
+
+          if (recipeId !== null && !RECIPES[recipeId]) {
+            messages.push(`Missing recipe "${recipeId}" for ${day} ${meal}`);
+          }
+        });
+      });
+
+      Object.entries(RECIPES).forEach(([recipeId, recipe]) => {
+        if (!Array.isArray(recipe.ingredients)) {
+          messages.push(`Recipe "${recipeId}" needs an ingredients array`);
+          return;
+        }
+
+        recipe.ingredients.forEach((item, index) => {
+          const location = `${recipeId} ingredient ${index + 1}`;
+
+          if (!INGREDIENTS[item.id]) {
+            messages.push(`${location} uses missing ingredient "${item.id}"`);
+          }
+
+          ["raw", "cooked"].forEach((mode) => {
+            const amount = item.amount?.[mode];
+
+            if (!Number.isFinite(amount) || amount < 0) {
+              messages.push(`${location} has invalid ${mode} amount`);
+            }
+          });
+        });
+      });
+
+      if (messages.length > 0) {
+        console.warn("Meal prep data issues:", messages);
+      }
+    }
+
+    function renderRecipeLines(recipe) {
+      if (!recipe) {
+        return '<span class="empty">-</span>';
+      }
+
+      return recipe.ingredients
+        .map((item) => `<span class="meal-line">${formatIngredientLine(item, amountMode)}</span>`)
+        .join("");
+    }
+
+    function renderTable() {
+      const headerCells = DAYS.map((day) => {
+        const isDisabled = disabledDays.has(day);
+
+        return `
+          <th class="${isDisabled ? "disabled-scope" : ""}" scope="col">
+            <button class="header-button" type="button" data-day="${day}" aria-pressed="${isDisabled}">
+              <span class="status-dot" aria-hidden="true"></span>
+              <span>${day}</span>
+            </button>
+          </th>
+        `;
+      }).join("");
+
+      tableHead.innerHTML = `
+        <tr>
+          <th scope="col"><span class="corner-label">Meal / Day</span></th>
+          ${headerCells}
+        </tr>
+      `;
+
+      tableBody.innerHTML = MEALS.map((meal) => {
+        const mealDisabled = disabledMeals.has(meal);
+        const cells = DAYS.map((day) => {
+          const recipe = getRecipe(day, meal);
+          const disabled = isCellDisabled(day, meal);
+
+          return `
+            <td class="${disabled ? "disabled-scope" : ""}">
+              <button class="cell-button" type="button" data-day="${day}" data-meal="${meal}" aria-pressed="${disabled}" ${recipe ? "" : 'disabled aria-label="Empty meal slot"'}>
+                ${renderRecipeLines(recipe)}
+              </button>
+            </td>
+          `;
+        }).join("");
+
+        return `
+          <tr>
+            <th class="${mealDisabled ? "disabled-scope" : ""}" scope="row">
+              <button class="header-button" type="button" data-meal="${meal}" aria-pressed="${mealDisabled}">
+                <span class="status-dot" aria-hidden="true"></span>
+                <span>${meal}</span>
+              </button>
+            </th>
+            ${cells}
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function renderMobile() {
+      const day = DAYS[currentDayIndex];
+      const isDayDisabled = disabledDays.has(day);
+
+      mobileDayToggle.setAttribute("aria-pressed", String(isDayDisabled));
+      mobileDayToggle.classList.toggle("disabled-scope", isDayDisabled);
+      mobileDayToggle.innerHTML = `<span>${day}</span><small>${currentDayIndex + 1} of ${DAYS.length}</small>`;
+
+      mobileMeals.innerHTML = MEALS.map((meal) => {
+        const recipe = getRecipe(day, meal);
+        const mealDisabled = disabledMeals.has(meal);
+        const cellDisabled = isCellDisabled(day, meal);
+
+        return `
+          <div class="mobile-row ${cellDisabled ? "disabled-scope" : ""}">
+            <button class="mobile-meal-toggle" type="button" data-meal="${meal}" aria-pressed="${mealDisabled}">
+              <span class="status-dot" aria-hidden="true"></span>
+              <span>${meal}</span>
+            </button>
+            <button class="mobile-cell-button" type="button" data-day="${day}" data-meal="${meal}" aria-pressed="${cellDisabled}" ${recipe ? "" : 'disabled aria-label="Empty meal slot"'}>
+              ${renderRecipeLines(recipe)}
+            </button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function getTotals() {
+      const totals = new Map();
+
+      DAYS.forEach((day) => {
+        MEALS.forEach((meal) => {
+          const recipe = getRecipe(day, meal);
+
+          if (!recipe || isCellDisabled(day, meal)) {
+            return;
+          }
+
+          recipe.ingredients.forEach((item) => {
+            const ingredient = INGREDIENTS[item.id];
+            const key = `${item.id}::${ingredient.unit}`;
+            const current = totals.get(key) || { id: item.id, unit: ingredient.unit, amount: 0 };
+            current.amount += item.amount[amountMode];
+            totals.set(key, current);
+          });
+        });
+      });
+
+      return Array.from(totals.values());
+    }
+
+    function renderIngredients() {
+      const totals = getTotals();
+      ingredientMode.textContent = `${amountMode === "raw" ? "Raw" : "Cooked"} totals`;
+
+      if (totals.length === 0) {
+        ingredientList.innerHTML = '<li class="empty-note">No enabled meals right now.</li>';
+        return;
+      }
+
+      ingredientList.innerHTML = totals.map((total) => {
+        const ingredient = INGREDIENTS[total.id];
+
+        return `
+          <li>
+            <strong>${ingredient.label[amountMode]}</strong>
+            <span>${formatAmount(total.amount, total.unit)}</span>
+          </li>
+        `;
+      }).join("");
+    }
+
+    function render() {
+      rawButton.setAttribute("aria-pressed", String(amountMode === "raw"));
+      cookedButton.setAttribute("aria-pressed", String(amountMode === "cooked"));
+      renderTable();
+      renderMobile();
+      renderIngredients();
+    }
+
+    function toggleSetValue(set, value) {
+      if (set.has(value)) {
+        set.delete(value);
+      } else {
+        set.add(value);
+      }
+    }
+
+    function changeDay(direction) {
+      currentDayIndex = (currentDayIndex + direction + DAYS.length) % DAYS.length;
+      render();
+    }
+
+    rawButton.addEventListener("click", () => {
+      amountMode = "raw";
+      render();
+    });
+
+    cookedButton.addEventListener("click", () => {
+      amountMode = "cooked";
+      render();
+    });
+
+    tableHead.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-day]");
+
+      if (!button) {
+        return;
+      }
+
+      toggleSetValue(disabledDays, button.dataset.day);
+      render();
+    });
+
+    tableBody.addEventListener("click", (event) => {
+      const mealHeader = event.target.closest("th [data-meal]");
+      const cell = event.target.closest("td [data-day][data-meal]");
+
+      if (mealHeader) {
+        toggleSetValue(disabledMeals, mealHeader.dataset.meal);
+        render();
+        return;
+      }
+
+      if (cell) {
+        if (!getRecipe(cell.dataset.day, cell.dataset.meal)) {
+          return;
+        }
+
+        toggleSetValue(disabledCells, cellKey(cell.dataset.day, cell.dataset.meal));
+        render();
+      }
+    });
+
+    prevDay.addEventListener("click", () => changeDay(-1));
+    nextDay.addEventListener("click", () => changeDay(1));
+
+    mobileDayToggle.addEventListener("click", () => {
+      toggleSetValue(disabledDays, DAYS[currentDayIndex]);
+      render();
+    });
+
+    mobileMeals.addEventListener("click", (event) => {
+      const mealButton = event.target.closest(".mobile-meal-toggle");
+      const cellButton = event.target.closest(".mobile-cell-button");
+
+      if (mealButton) {
+        toggleSetValue(disabledMeals, mealButton.dataset.meal);
+        render();
+        return;
+      }
+
+      if (cellButton) {
+        if (!getRecipe(cellButton.dataset.day, cellButton.dataset.meal)) {
+          return;
+        }
+
+        toggleSetValue(disabledCells, cellKey(cellButton.dataset.day, cellButton.dataset.meal));
+        render();
+      }
+    });
+
+    let swipeStartX = 0;
+    let swipeStartY = 0;
+
+    mobileMeals.addEventListener("touchstart", (event) => {
+      const touch = event.changedTouches[0];
+      swipeStartX = touch.clientX;
+      swipeStartY = touch.clientY;
+    }, { passive: true });
+
+    mobileMeals.addEventListener("touchend", (event) => {
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - swipeStartX;
+      const deltaY = touch.clientY - swipeStartY;
+
+      if (Math.abs(deltaX) > 48 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4) {
+        changeDay(deltaX < 0 ? 1 : -1);
+      }
+    }, { passive: true });
+
+    validateMealData();
+    render();
+  </script>
+</body>
+</html>

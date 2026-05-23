@@ -129,6 +129,34 @@
       border: 0.12rem solid #0f7f64;
     }
 
+    .prep-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 0.72rem);
+      grid-template-rows: repeat(2, 0.56rem);
+      gap: 0.16rem;
+      padding: 0.24rem;
+      border: 0.14rem solid #0f7f64;
+      border-radius: 0.45rem;
+      background: #ffffff;
+    }
+
+    .prep-grid span {
+      border-radius: 0.2rem;
+      background: var(--accent);
+    }
+
+    .prep-grid span:nth-child(2) {
+      background: #111111;
+    }
+
+    .prep-grid span:nth-child(3) {
+      background: #d9f2ea;
+    }
+
+    .prep-grid span:nth-child(4) {
+      background: #f1f1f1;
+    }
+
     .app-card strong {
       display: block;
       margin-bottom: 0.3rem;
@@ -198,6 +226,22 @@
           <strong>Rice Cook</strong>
           <span>Measure raw or cooked rice and get water, oil, salt, and timing.</span>
           <span class="badge">Cooking</span>
+        </span>
+      </a>
+
+      <a class="app-card" href="/meal-prep/">
+        <span class="icon" aria-hidden="true">
+          <span class="prep-grid">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </span>
+        <span class="app-copy">
+          <strong>Meal Prep</strong>
+          <span>Tap weekly meals on or off and total raw or cooked ingredients.</span>
+          <span class="badge">Prep</span>
         </span>
       </a>
     </section>
