@@ -129,32 +129,31 @@
       border: 0.12rem solid #0f7f64;
     }
 
-    .prep-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 0.72rem);
-      grid-template-rows: repeat(2, 0.56rem);
-      gap: 0.16rem;
-      padding: 0.24rem;
-      border: 0.14rem solid #0f7f64;
-      border-radius: 0.45rem;
-      background: #ffffff;
+    .prep-icon {
+      width: 3.65rem;
+      height: 3.65rem;
+      background: #ffffff !important;
+      box-shadow:
+        inset 0 0 0 1px #ececef,
+        0 8px 20px rgba(20, 30, 60, 0.07) !important;
     }
 
-    .prep-grid span {
-      border-radius: 0.2rem;
-      background: var(--accent);
+    .prep-mark {
+      width: 2.82rem;
+      height: 2.82rem;
     }
 
-    .prep-grid span:nth-child(2) {
-      background: #111111;
+    .prep-mark path,
+    .prep-mark rect,
+    .prep-mark circle {
+      vector-effect: non-scaling-stroke;
     }
 
-    .prep-grid span:nth-child(3) {
-      background: #d9f2ea;
-    }
-
-    .prep-grid span:nth-child(4) {
-      background: #f1f1f1;
+    .app-card.prep-card:hover,
+    .app-card.prep-card:focus-visible {
+      border-color: rgba(217, 107, 26, 0.45);
+      background: #fffaf3;
+      box-shadow: 0 22px 60px rgba(217, 107, 26, 0.12);
     }
 
     .app-card strong {
@@ -229,14 +228,15 @@
         </span>
       </a>
 
-      <a class="app-card" href="/meal-prep/">
-        <span class="icon" aria-hidden="true">
-          <span class="prep-grid">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </span>
+      <a class="app-card prep-card" href="/meal-prep/">
+        <span class="icon prep-icon" aria-hidden="true">
+          <svg class="prep-mark" viewBox="0 0 48 48">
+            <rect x="7.5" y="8.5" width="33" height="31" rx="7.5" fill="#fff" stroke="#15181d" stroke-width="2.4"></rect>
+            <path d="M24 8.5v31M7.5 23.5h33" fill="none" stroke="#ececef" stroke-width="2.4"></path>
+            <circle cx="15.8" cy="16" r="2.8" fill="#f08a3c"></circle>
+            <circle cx="32.2" cy="16" r="2.8" fill="#15181d"></circle>
+            <path d="M17.5 32.5l4.4 4.5 9.8-11" fill="none" stroke="#d96b1a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
         </span>
         <span class="app-copy">
           <strong>Meal Prep</strong>
