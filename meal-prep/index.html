@@ -686,11 +686,10 @@
     }
 
     .empty-note {
-      list-style: none;
-      margin-left: -1.1rem;
-      padding: 0.55rem 0;
+      display: block;
+      padding: 0;
       color: var(--muted);
-      font-size: 0.92rem;
+      font-size: 0.95rem;
     }
 
     .day-ingredients-table-wrap {
@@ -1122,7 +1121,7 @@
 
     function renderTotalsList(totals) {
       if (totals.length === 0) {
-        return '<ul class="ingredient-list"><li class="empty-note">No enabled meals right now.</li></ul>';
+        return '<span class="empty-note">—</span>';
       }
 
       const items = totals.map((total) => {
