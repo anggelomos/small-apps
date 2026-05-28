@@ -14,12 +14,19 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ffffff'/%3E%3Crect x='15' y='16' width='34' height='32' rx='8' fill='%23ffffff' stroke='%2315181d' stroke-width='4'/%3E%3Cpath d='M32 16v32M15 31h34' stroke='%23ececef' stroke-width='4'/%3E%3Cpath d='M24 38l5 5 11-13' fill='none' stroke='%23d96b1a' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='24' cy='24' r='4' fill='%23f08a3c'/%3E%3Ccircle cx='40' cy='24' r='4' fill='%2315181d'/%3E%3C/svg%3E">
   <script>
     const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const MEALS = ["Breakfast", "Lunch", "Dinner"];
+    const MEALS = ["Breakfast", "Snack 1", "Lunch", "Snack 2", "Dinner"];
+    const MEAL_LABELS = {
+      Breakfast: "Breakfast",
+      "Snack 1": "Snack",
+      Lunch: "Lunch",
+      "Snack 2": "Snack",
+      Dinner: "Dinner"
+    };
 
     const INGREDIENTS = {
       eggs: { label: { raw: "boiled eggs", cooked: "boiled eggs" }, unit: "unit" },
       greekYogurt: { label: { raw: "Greek yogurt", cooked: "Greek yogurt" }, unit: "g" },
-      banana: { label: { raw: "banana", cooked: "banana" }, unit: "unit" },
+      blueberries: { label: { raw: "blueberries", cooked: "blueberries" }, unit: "g" },
       rice: { label: { raw: "raw rice", cooked: "rice" }, unit: "g" },
       chicken: { label: { raw: "raw chicken", cooked: "chicken" }, unit: "g" },
       beef: { label: { raw: "raw beef", cooked: "beef" }, unit: "g" },
@@ -32,8 +39,14 @@
         label: "Breakfast",
         ingredients: [
           { id: "eggs", amount: { raw: 2, cooked: 2 } },
+          { id: "vegetables", amount: { raw: 100, cooked: 100 } }
+        ]
+      },
+      snack: {
+        label: "Snack",
+        ingredients: [
           { id: "greekYogurt", amount: { raw: 100, cooked: 100 } },
-          { id: "banana", amount: { raw: 1, cooked: 1 } }
+          { id: "blueberries", amount: { raw: 50, cooked: 50 } }
         ]
       },
       chickenLunch: {
@@ -84,13 +97,13 @@
     };
 
     const WEEK_PLAN = {
-      Monday: { Breakfast: "breakfast", Lunch: "chickenLunch", Dinner: "chickenDinner" },
-      Tuesday: { Breakfast: "breakfast", Lunch: "chickenLunch", Dinner: "chickenDinner" },
-      Wednesday: { Breakfast: "breakfast", Lunch: "chickenLunch", Dinner: "chickenDinner" },
-      Thursday: { Breakfast: "breakfast", Lunch: "beefLunch", Dinner: "beefDinner" },
-      Friday: { Breakfast: "breakfast", Lunch: "fishLunch", Dinner: "fishDinner" },
-      Saturday: { Breakfast: null, Lunch: null, Dinner: "beefDinner" },
-      Sunday: { Breakfast: "breakfast", Lunch: "fishLunch", Dinner: "fishDinner" }
+      Monday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "chickenLunch", "Snack 2": "snack", Dinner: "chickenDinner" },
+      Tuesday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "chickenLunch", "Snack 2": "snack", Dinner: "chickenDinner" },
+      Wednesday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "chickenLunch", "Snack 2": "snack", Dinner: "chickenDinner" },
+      Thursday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "beefLunch", "Snack 2": "snack", Dinner: "beefDinner" },
+      Friday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "fishLunch", "Snack 2": "snack", Dinner: "fishDinner" },
+      Saturday: { Breakfast: null, "Snack 1": null, Lunch: null, "Snack 2": null, Dinner: "beefDinner" },
+      Sunday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "fishLunch", "Snack 2": "snack", Dinner: "fishDinner" }
     };
   </script>
   <style>
@@ -600,11 +613,19 @@
 
     .section-head {
       display: flex;
-      align-items: baseline;
+      align-items: start;
       justify-content: space-between;
       gap: 1rem;
       padding-bottom: 0.5rem;
       border-bottom: 1px solid var(--line);
+    }
+
+    .total-view-toggle {
+      flex: 0 0 auto;
+    }
+
+    .total-view-toggle button {
+      min-width: 4.6rem;
     }
 
     .tiny {
@@ -614,6 +635,11 @@
       font-size: 0.78rem;
       letter-spacing: 0.04em;
       white-space: nowrap;
+    }
+
+    .ingredient-output {
+      display: grid;
+      gap: 0.8rem;
     }
 
     .ingredient-list {
@@ -652,6 +678,56 @@
       font-size: 0.92rem;
     }
 
+    .day-ingredients-table-wrap {
+      display: none;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+
+    .day-ingredients-table {
+      width: 100%;
+      min-width: 50rem;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: var(--surface);
+    }
+
+    .day-ingredients-table th,
+    .day-ingredients-table td {
+      min-width: 7.1rem;
+      border-bottom: 0;
+      vertical-align: top;
+    }
+
+    .day-ingredients-table th {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .day-ingredients-table td {
+      padding: 0.8rem 0.85rem 0.9rem;
+    }
+
+    .day-ingredients-table th + th,
+    .day-ingredients-table td + td {
+      border-left: 1px solid var(--line-soft);
+    }
+
+    .day-ingredients-mobile {
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .day-ingredients-mobile strong {
+      color: var(--ink);
+      font-size: 0.96rem;
+    }
+
     @media (min-width: 720px) {
       main {
         padding: 1.75rem 1.5rem;
@@ -677,6 +753,14 @@
       }
 
       .mobile-planner {
+        display: none;
+      }
+
+      .day-ingredients-table-wrap {
+        display: block;
+      }
+
+      .day-ingredients-mobile {
         display: none;
       }
     }
@@ -742,8 +826,12 @@
             <h2 id="ingredientsTitle">Week Ingredients</h2>
             <span class="tiny" id="ingredientMode">Raw totals</span>
           </div>
+          <div class="toggle total-view-toggle" role="group" aria-label="Ingredient total view">
+            <button type="button" id="weekTotalsButton" aria-pressed="true">Week</button>
+            <button type="button" id="dayTotalsButton" aria-pressed="false">Day</button>
+          </div>
         </div>
-        <ul class="ingredient-list" id="ingredientList"></ul>
+        <div class="ingredient-output" id="ingredientOutput"></div>
       </section>
     </div>
   </main>
@@ -753,7 +841,9 @@
     const tableBody = document.querySelector("#tableBody");
     const rawButton = document.querySelector("#rawButton");
     const cookedButton = document.querySelector("#cookedButton");
-    const ingredientList = document.querySelector("#ingredientList");
+    const weekTotalsButton = document.querySelector("#weekTotalsButton");
+    const dayTotalsButton = document.querySelector("#dayTotalsButton");
+    const ingredientOutput = document.querySelector("#ingredientOutput");
     const ingredientMode = document.querySelector("#ingredientMode");
     const prevDay = document.querySelector("#prevDay");
     const nextDay = document.querySelector("#nextDay");
@@ -761,6 +851,7 @@
     const mobileMeals = document.querySelector("#mobileMeals");
 
     let amountMode = "raw";
+    let totalViewMode = "week";
     let currentDayIndex = 0;
     const disabledCells = new Set();
 
@@ -771,6 +862,10 @@
     function capitalizeFirst(text) {
       if (!text) return text;
       return text.charAt(0).toUpperCase() + text.slice(1);
+    }
+
+    function getMealLabel(meal) {
+      return MEAL_LABELS[meal] || meal;
     }
 
     function formatAmountValue(value, unit) {
@@ -951,7 +1046,7 @@
           <tr>
             <th class="${mealDisabled ? "disabled-scope" : ""}" scope="row" data-meal="${meal}" aria-pressed="${mealDisabled}">
               <button class="header-button" type="button" data-meal="${meal}" aria-pressed="${mealDisabled}">
-                <span>${meal}</span>
+                <span>${getMealLabel(meal)}</span>
               </button>
             </th>
             ${cells}
@@ -976,7 +1071,7 @@
         return `
           <div class="mobile-row ${cellDisabled ? "disabled-scope" : ""}">
             <button class="mobile-meal-toggle" type="button" data-meal="${meal}" aria-pressed="${mealDisabled}">
-              <span>${meal}</span>
+              <span>${getMealLabel(meal)}</span>
             </button>
             <button class="mobile-cell-button" type="button" data-day="${day}" data-meal="${meal}" aria-pressed="${cellDisabled}" ${recipe ? "" : 'disabled aria-label="Empty meal slot"'}>
               ${renderRecipeLines(recipe)}
@@ -986,10 +1081,10 @@
       }).join("");
     }
 
-    function getTotals() {
+    function getTotalsForDays(days) {
       const totals = new Map();
 
-      DAYS.forEach((day) => {
+      days.forEach((day) => {
         MEALS.forEach((meal) => {
           const recipe = getRecipe(day, meal);
 
@@ -1010,22 +1105,52 @@
       return Array.from(totals.values());
     }
 
-    function renderIngredients() {
-      const totals = getTotals();
-      ingredientMode.textContent = `${amountMode === "raw" ? "Raw" : "Cooked"} totals`;
-
+    function renderTotalsList(totals) {
       if (totals.length === 0) {
-        ingredientList.innerHTML = '<li class="empty-note">No enabled meals right now.</li>';
-        return;
+        return '<ul class="ingredient-list"><li class="empty-note">No enabled meals right now.</li></ul>';
       }
 
-      ingredientList.innerHTML = totals.map((total) => {
+      const items = totals.map((total) => {
         const ingredient = INGREDIENTS[total.id];
         const name = capitalizeFirst(ingredient.label[amountMode]);
         const qty = formatAmountValue(total.amount, total.unit);
 
         return `<li>${name} <span class="qty">— ${qty}</span></li>`;
       }).join("");
+
+      return `<ul class="ingredient-list">${items}</ul>`;
+    }
+
+    function renderDayTotals() {
+      const headerCells = DAYS.map((day) => `<th scope="col">${day}</th>`).join("");
+      const bodyCells = DAYS.map((day) => `<td>${renderTotalsList(getTotalsForDays([day]))}</td>`).join("");
+      const currentDay = DAYS[currentDayIndex];
+
+      return `
+        <div class="day-ingredients-table-wrap">
+          <table class="day-ingredients-table">
+            <thead><tr>${headerCells}</tr></thead>
+            <tbody><tr>${bodyCells}</tr></tbody>
+          </table>
+        </div>
+        <div class="day-ingredients-mobile">
+          <strong>${currentDay}</strong>
+          ${renderTotalsList(getTotalsForDays([currentDay]))}
+        </div>
+      `;
+    }
+
+    function renderIngredients() {
+      weekTotalsButton.setAttribute("aria-pressed", String(totalViewMode === "week"));
+      dayTotalsButton.setAttribute("aria-pressed", String(totalViewMode === "day"));
+      ingredientMode.textContent = `${amountMode === "raw" ? "Raw" : "Cooked"} ${totalViewMode === "week" ? "week" : "daily"} totals`;
+
+      if (totalViewMode === "week") {
+        ingredientOutput.innerHTML = renderTotalsList(getTotalsForDays(DAYS));
+        return;
+      }
+
+      ingredientOutput.innerHTML = renderDayTotals();
     }
 
     function render() {
@@ -1048,6 +1173,16 @@
 
     cookedButton.addEventListener("click", () => {
       amountMode = "cooked";
+      render();
+    });
+
+    weekTotalsButton.addEventListener("click", () => {
+      totalViewMode = "week";
+      render();
+    });
+
+    dayTotalsButton.addEventListener("click", () => {
+      totalViewMode = "day";
       render();
     });
 
