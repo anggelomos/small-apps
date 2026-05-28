@@ -685,6 +685,19 @@
       font-variant-numeric: tabular-nums;
     }
 
+    .week-list {
+      margin: 0;
+      padding: 0 0 0 1.1rem;
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    .week-list li::marker {
+      color: var(--accent);
+      font-size: 0.85em;
+    }
+
     .empty-note {
       display: block;
       padding: 0;
@@ -1135,6 +1148,22 @@
       return `<ul class="ingredient-list">${items}</ul>`;
     }
 
+    function renderWeekTotalsList(totals) {
+      if (totals.length === 0) {
+        return '<span class="empty-note">—</span>';
+      }
+
+      const items = totals.map((total) => {
+        const ingredient = INGREDIENTS[total.id];
+        const name = capitalizeFirst(ingredient.label[amountMode]);
+        const qty = formatAmountValue(total.amount, total.unit);
+
+        return `<li>${name} — ${qty}</li>`;
+      }).join("");
+
+      return `<ul class="week-list">${items}</ul>`;
+    }
+
     function renderDayTotals() {
       const headerCells = DAYS.map((day) => `<th scope="col">${day}</th>`).join("");
       const bodyCells = DAYS.map((day) => `<td>${renderTotalsList(getTotalsForDays([day]))}</td>`).join("");
@@ -1160,7 +1189,7 @@
       ingredientMode.textContent = `${amountMode === "raw" ? "Raw" : "Cooked"} ${totalViewMode === "week" ? "week" : "daily"} totals`;
 
       if (totalViewMode === "week") {
-        ingredientOutput.innerHTML = renderTotalsList(getTotalsForDays(DAYS));
+        ingredientOutput.innerHTML = renderWeekTotalsList(getTotalsForDays(DAYS));
         return;
       }
 
