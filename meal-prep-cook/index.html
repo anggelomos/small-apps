@@ -1,0 +1,1190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Calculate exact water, oil, salt, and spices for meal prepping rice, chicken, beef, or fish.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Small Apps">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Meal Prep Cook</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/assets/meal-prep-cook-favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --surface-soft: #f7f7f7;
+      --ink: #0a0a0a;
+      --muted: #666666;
+      --line: #e7e7e7;
+      --accent: #10a37f;
+      --accent-dark: #0f7f64;
+      --gold: #8a6d1f;
+      --shadow: 0 18px 44px rgba(0, 0, 0, 0.06);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    main {
+      width: min(100%, 52rem);
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .shell {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      padding: 1rem 0 2rem;
+    }
+
+    .hero {
+      display: grid;
+      gap: 1rem;
+      padding: 1.25rem 0 0.5rem;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .mark {
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 3.15rem;
+      height: 3.15rem;
+      border-radius: 0.9rem;
+      background: #f0fbf7;
+      box-shadow: inset 0 0 0 1px rgba(16, 163, 127, 0.12);
+    }
+
+    .bowl {
+      position: relative;
+      width: 2.1rem;
+      height: 1.4rem;
+      border-radius: 0 0 1.4rem 1.4rem;
+      background: var(--accent);
+      overflow: hidden;
+    }
+
+    .bowl::before {
+      content: "";
+      position: absolute;
+      left: 0.18rem;
+      right: 0.18rem;
+      top: -0.26rem;
+      height: 0.7rem;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 28% 46%, #fff 0 0.11rem, transparent 0.12rem),
+        radial-gradient(circle at 48% 34%, #fff 0 0.12rem, transparent 0.13rem),
+        radial-gradient(circle at 65% 48%, #fff 0 0.1rem, transparent 0.11rem),
+        #f7f0e4;
+      border: 0.12rem solid var(--accent-dark);
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 8vw, 4.5rem);
+      line-height: 1;
+      letter-spacing: 0;
+      font-weight: 760;
+    }
+
+    .tagline {
+      max-width: 42rem;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.4vw, 1.2rem);
+      line-height: 1.5;
+    }
+
+    /* Collapsible Details Panel */
+    details.panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    details.panel[open] {
+      border-color: rgba(16, 163, 127, 0.45);
+      box-shadow: 0 22px 60px rgba(16, 163, 127, 0.08);
+    }
+
+    details.panel summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      font-size: 1.38rem;
+      font-weight: 760;
+      cursor: pointer;
+      list-style: none;
+      outline: none;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+
+    details.panel summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.panel summary:hover,
+    details.panel summary:focus-visible {
+      background: var(--surface-soft);
+    }
+
+    details.panel summary::after {
+      content: "";
+      display: inline-block;
+      width: 0.6rem;
+      height: 0.6rem;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(45deg);
+      transition: transform 0.2s ease;
+      margin-right: 0.25rem;
+    }
+
+    details.panel[open] summary::after {
+      transform: rotate(-135deg);
+    }
+
+    details.panel .panel-content {
+      padding: 1.5rem;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .calculator {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .field {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    label,
+    .label {
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      min-height: 4rem;
+      padding: 0.45rem 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 0.85rem;
+      background: var(--surface);
+    }
+
+    input {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .unit {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.35rem;
+      padding: 0.35rem;
+      border: 1px solid var(--line);
+      border-radius: 0.85rem;
+      background: var(--surface-soft);
+    }
+
+    .toggle button {
+      min-height: 3rem;
+      border: 0;
+      border-radius: 0.68rem;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .toggle button[aria-pressed="true"] {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(16, 163, 127, 0.22);
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+
+    .result {
+      position: relative;
+      min-height: 5.6rem;
+      padding: 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 0.85rem;
+      background: #fbfbfb;
+    }
+
+    .result-button {
+      width: 100%;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      appearance: none;
+    }
+
+    .result-button:hover,
+    .result-button:focus-visible {
+      border-color: rgba(16, 163, 127, 0.45);
+      background: #f7fffc;
+      outline: 0;
+      box-shadow: 0 0 0 3px rgba(16, 163, 127, 0.12);
+    }
+
+    .tap-indicator {
+      position: absolute;
+      top: 0.55rem;
+      right: 0.55rem;
+      padding: 0.16rem 0.38rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .result strong {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: clamp(1.38rem, 7vw, 2.1rem);
+      line-height: 1.05;
+      overflow-wrap: anywhere;
+    }
+
+    .result > span:not(.tap-indicator) {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .hint {
+      min-height: 2.75rem;
+      padding: 0.8rem 0.95rem;
+      border-radius: 0.85rem;
+      background: #f0fbf7;
+      color: #0f6f59;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .guide {
+      display: grid;
+      gap: 0.7rem;
+      border-top: 1px solid var(--line);
+      padding-top: 1.25rem;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    h2 {
+      font-size: 1.18rem;
+      line-height: 1.2;
+    }
+
+    .tiny {
+      color: var(--muted);
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .steps {
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.75rem;
+      align-items: start;
+      padding: 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 0.85rem;
+      background: var(--surface);
+    }
+
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 1.85rem;
+      height: 1.85rem;
+      border-radius: 50%;
+      background: #f0fbf7;
+      color: #0f7f64;
+      font-size: 0.9rem;
+      font-weight: 900;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 0.2rem;
+      font-size: 1rem;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+
+    .note {
+      padding: 0.9rem 1rem;
+      border: 1px solid #ece4c7;
+      border-left: 0.28rem solid var(--gold);
+      border-radius: 0.85rem;
+      background: #fffdf5;
+      color: #5f501d;
+      line-height: 1.45;
+    }
+
+    @media (min-width: 720px) {
+      main {
+        padding: 1.5rem;
+      }
+    }
+
+    @media (min-width: 980px) {
+      .steps {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .step {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="shell">
+      <header class="hero">
+        <div class="title-row">
+          <div class="mark" aria-hidden="true">
+            <div class="bowl"></div>
+          </div>
+          <h1>Meal Prep Cook</h1>
+        </div>
+        <p class="tagline">Calculate exact water, oil, salt, and spices for meal prepping rice, chicken, beef, or fish.</p>
+      </header>
+
+      <!-- RICE SECTION -->
+      <details class="panel" id="sec-rice">
+        <summary>Rice</summary>
+        <div class="panel-content">
+          <section class="calculator" aria-labelledby="calc-rice-title">
+            <h2 style="display:none;" id="calc-rice-title">Rice Calculator</h2>
+
+            <div class="field">
+              <label for="riceAmount">Amount</label>
+              <div class="input-wrap">
+                <input id="riceAmount" type="number" min="1" inputmode="decimal" value="400" aria-describedby="riceAmountHelp">
+                <span class="unit">g</span>
+              </div>
+            </div>
+
+            <div class="field" aria-labelledby="riceAmountTypeLabel">
+              <div class="label" id="riceAmountTypeLabel">This amount is</div>
+              <div class="toggle">
+                <button type="button" id="riceRawButton" aria-pressed="true">Raw rice</button>
+                <button type="button" id="riceCookedButton" aria-pressed="false">Cooked rice</button>
+              </div>
+            </div>
+
+            <div class="results" aria-live="polite">
+              <div class="result">
+                <span>Raw rice</span>
+                <strong id="riceRaw">400g</strong>
+              </div>
+              <div class="result">
+                <span>Cooked rice</span>
+                <strong id="riceCooked">1100g</strong>
+              </div>
+              <div class="result">
+                <span>Cold water</span>
+                <strong id="riceWater">680ml</strong>
+              </div>
+              <button class="result result-button" id="riceOilCard" type="button" aria-label="Toggle oil between milliliters and teaspoons">
+                <span class="tap-indicator" id="riceOilUnitHint">ml</span>
+                <span>Oil</span>
+                <strong id="riceOil">1 tsp</strong>
+              </button>
+              <button class="result result-button" id="riceSaltCard" type="button" aria-label="Toggle salt between grams and teaspoons">
+                <span class="tap-indicator" id="riceSaltUnitHint">g</span>
+                <span>Salt</span>
+                <strong id="riceSalt">3/4 tsp</strong>
+              </button>
+              <div class="result">
+                <span>Time</span>
+                <strong id="riceTime">13-15m</strong>
+              </div>
+            </div>
+
+            <p class="hint" id="riceAmountHelp">Cook time starts once the rice is simmering; use doneness signs as the final check.</p>
+          </section>
+
+          <section class="guide" aria-labelledby="guide-rice-title">
+            <div class="section-head">
+              <h2 id="guide-rice-title">Simple steps</h2>
+              <span class="tiny">White rice</span>
+            </div>
+
+            <div class="steps">
+              <article class="step">
+                <span class="step-number">1</span>
+                <div>
+                  <strong>Rinse</strong>
+                  <p>Wash the rice 2-4 times, until the water is less cloudy.</p>
+                </div>
+              </article>
+
+              <article class="step">
+                <span class="step-number">2</span>
+                <div>
+                  <strong>Cook</strong>
+                  <p>Add rice, cold water, oil, and salt. Bring to a boil, cover, then lower the heat.</p>
+                </div>
+              </article>
+
+              <article class="step">
+                <span class="step-number">3</span>
+                <div>
+                  <strong>Check</strong>
+                  <p>Do not stir. It is ready when water is gone, small holes appear, and a grain tastes tender.</p>
+                </div>
+              </article>
+
+              <article class="step">
+                <span class="step-number">4</span>
+                <div>
+                  <strong>Rest</strong>
+                  <p>Turn off the heat. Keep covered for 5-10 minutes, then fluff and cool before storing.</p>
+                </div>
+              </article>
+            </div>
+
+            <p class="note">For meal prep, let the rice cool before sealing containers. Fridge: 3-4 days. Freezer: several weeks.</p>
+          </section>
+        </div>
+      </details>
+
+      <!-- CHICKEN SECTION -->
+      <details class="panel" id="sec-chicken">
+        <summary>Chicken</summary>
+        <div class="panel-content">
+          <section class="calculator" aria-labelledby="calc-chicken-title">
+            <h2 style="display:none;" id="calc-chicken-title">Chicken Calculator</h2>
+
+            <div class="field">
+              <label for="chickenAmount">Amount (Raw)</label>
+              <div class="input-wrap">
+                <input id="chickenAmount" type="number" min="1" inputmode="decimal" value="1800" aria-describedby="chickenAmountHelp">
+                <span class="unit">g</span>
+              </div>
+            </div>
+
+            <div class="results" aria-live="polite">
+              <div class="result">
+                <span>Raw Chicken</span>
+                <strong id="chickenWeight">1800g</strong>
+              </div>
+              <button class="result result-button" id="chickenOilCard" type="button" aria-label="Toggle oil between milliliters and teaspoons">
+                <span class="tap-indicator" id="chickenOilUnitHint">ml</span>
+                <span>Oil</span>
+                <strong id="chickenOil">6 tsp</strong>
+              </button>
+              <button class="result result-button" id="chickenSaltCard" type="button" aria-label="Toggle salt between grams and teaspoons">
+                <span class="tap-indicator" id="chickenSaltUnitHint">g</span>
+                <span>Salt</span>
+                <strong id="chickenSalt">3 tsp</strong>
+              </button>
+              <button class="result result-button" id="chickenGarlicCard" type="button" aria-label="Toggle garlic between grams and teaspoons">
+                <span class="tap-indicator" id="chickenGarlicUnitHint">g</span>
+                <span>Garlic</span>
+                <strong id="chickenGarlic">1 1/2 tsp</strong>
+              </button>
+              <button class="result result-button" id="chickenPepperCard" type="button" aria-label="Toggle pepper between grams and teaspoons">
+                <span class="tap-indicator" id="chickenPepperUnitHint">g</span>
+                <span>Pepper</span>
+                <strong id="chickenPepper">1 1/2 tsp</strong>
+              </button>
+              <button class="result result-button" id="chickenPaprikaCard" type="button" aria-label="Toggle paprika between grams and teaspoons">
+                <span class="tap-indicator" id="chickenPaprikaUnitHint">g</span>
+                <span>Paprika</span>
+                <strong id="chickenPaprika">3/4 tsp</strong>
+              </button>
+              <button class="result result-button" id="chickenCurryCard" type="button" aria-label="Toggle curry between grams and teaspoons">
+                <span class="tap-indicator" id="chickenCurryUnitHint">g</span>
+                <span>Curry</span>
+                <strong id="chickenCurry">1/3 tsp</strong>
+              </button>
+            </div>
+
+            
+          </section>
+        </div>
+      </details>
+
+      <!-- BEEF SECTION -->
+      <details class="panel" id="sec-beef">
+        <summary>Beef</summary>
+        <div class="panel-content">
+          <section class="calculator" aria-labelledby="calc-beef-title">
+            <h2 style="display:none;" id="calc-beef-title">Beef Calculator</h2>
+
+            <div class="field">
+              <label for="beefAmount">Amount (Raw)</label>
+              <div class="input-wrap">
+                <input id="beefAmount" type="number" min="1" inputmode="decimal" value="650" aria-describedby="beefAmountHelp">
+                <span class="unit">g</span>
+              </div>
+            </div>
+
+            <div class="results" aria-live="polite">
+              <div class="result">
+                <span>Raw Beef</span>
+                <strong id="beefWeight">650g</strong>
+              </div>
+              <button class="result result-button" id="beefOilCard" type="button" aria-label="Toggle oil between milliliters and teaspoons">
+                <span class="tap-indicator" id="beefOilUnitHint">ml</span>
+                <span>Oil</span>
+                <strong id="beefOil">3 1/4 tsp</strong>
+              </button>
+              <button class="result result-button" id="beefSaltCard" type="button" aria-label="Toggle salt between grams and teaspoons">
+                <span class="tap-indicator" id="beefSaltUnitHint">g</span>
+                <span>Salt</span>
+                <strong id="beefSalt">1 tsp</strong>
+              </button>
+              <button class="result result-button" id="beefMeatDressingCard" type="button" aria-label="Toggle meat dressing between grams and teaspoons">
+                <span class="tap-indicator" id="beefMeatDressingUnitHint">g</span>
+                <span>Meat Dressing</span>
+                <strong id="beefMeatDressing">1 tsp</strong>
+              </button>
+            </div>
+
+            
+          </section>
+        </div>
+      </details>
+
+      <!-- FISH SECTION -->
+      <details class="panel" id="sec-fish">
+        <summary>Fish</summary>
+        <div class="panel-content">
+          <section class="calculator" aria-labelledby="calc-fish-title">
+            <h2 style="display:none;" id="calc-fish-title">Fish Calculator</h2>
+
+            <div class="field">
+              <label for="fishAmount">Amount (Raw)</label>
+              <div class="input-wrap">
+                <input id="fishAmount" type="number" min="1" inputmode="decimal" value="900" aria-describedby="fishAmountHelp">
+                <span class="unit">g</span>
+              </div>
+            </div>
+
+            <div class="results" aria-live="polite">
+              <div class="result">
+                <span>Raw Fish</span>
+                <strong id="fishWeight">900g</strong>
+              </div>
+              <button class="result result-button" id="fishOilCard" type="button" aria-label="Toggle oil between milliliters and teaspoons">
+                <span class="tap-indicator" id="fishOilUnitHint">ml</span>
+                <span>Oil</span>
+                <strong id="fishOil">4 tsp</strong>
+              </button>
+              <button class="result result-button" id="fishSaltCard" type="button" aria-label="Toggle salt between grams and teaspoons">
+                <span class="tap-indicator" id="fishSaltUnitHint">g</span>
+                <span>Salt</span>
+                <strong id="fishSalt">1 1/2 tsp</strong>
+              </button>
+              <button class="result result-button" id="fishPepperCard" type="button" aria-label="Toggle pepper between grams and teaspoons">
+                <span class="tap-indicator" id="fishPepperUnitHint">g</span>
+                <span>Pepper</span>
+                <strong id="fishPepper">1 tsp</strong>
+              </button>
+              <button class="result result-button" id="fishGarlicCard" type="button" aria-label="Toggle garlic between grams and teaspoons">
+                <span class="tap-indicator" id="fishGarlicUnitHint">g</span>
+                <span>Garlic</span>
+                <strong id="fishGarlic">1 tsp</strong>
+              </button>
+            </div>
+
+            
+          </section>
+        </div>
+      </details>
+    </div>
+  </main>
+
+  <script>
+    // Constants
+    const COOKED_YIELD_FACTOR = 2.75;
+    const WATER_ML_PER_RAW_GRAM = 1.7;
+    const RICE_OIL_ML_PER_RAW_GRAM = 0.0125;
+    const RICE_SALT_GRAMS_PER_RAW_GRAM = 0.01;
+    const RICE_COOK_TIME_MINUTES = "13-15";
+    const RICE_REST_TIME_MINUTES = "5-10";
+
+    const ML_PER_TSP = 4.92892;
+    const SALT_GRAMS_PER_TSP = 6;
+
+    // Spice density factors in grams per teaspoon
+    const GARLIC_GRAMS_PER_TSP = 3.0;
+    const PEPPER_GRAMS_PER_TSP = 2.3;
+    const PAPRIKA_GRAMS_PER_TSP = 2.3;
+    const CURRY_GRAMS_PER_TSP = 2.0;
+    const MEAT_DRESSING_GRAMS_PER_TSP = 3.0;
+
+    // Helper functions
+    function round(value, step = 1) {
+      return Math.round(value / step) * step;
+    }
+
+    function formatNumber(value) {
+      return new Intl.NumberFormat("en", { maximumFractionDigits: 1 }).format(value);
+    }
+
+    function formatSmallAwareNumber(value, step = 1) {
+      if (value > 0 && value < 1) {
+        return new Intl.NumberFormat("en", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(value);
+      }
+      return formatNumber(round(value, step));
+    }
+
+    function formatWeight(value) {
+      return `${formatSmallAwareNumber(value)}g`;
+    }
+
+    function formatMl(value) {
+      const step = value >= 100 ? 5 : 1;
+      return `${formatSmallAwareNumber(value, step)}ml`;
+    }
+
+    function formatTsp(value) {
+      if (value <= 0) return "0 tsp";
+      
+      const whole = Math.floor(value);
+      const frac = value - whole;
+      
+      // Supported standard measuring fractions
+      const standardFracs = [
+        { val: 0.0, text: "" },
+        { val: 0.25, text: "1/4" },
+        { val: 0.3333, text: "1/3" },
+        { val: 0.5, text: "1/2" },
+        { val: 0.6667, text: "2/3" },
+        { val: 0.75, text: "3/4" },
+        { val: 1.0, text: "" }
+      ];
+      
+      let closest = standardFracs[0];
+      let minDiff = Math.abs(frac - closest.val);
+      
+      for (let i = 1; i < standardFracs.length; i++) {
+        let diff = Math.abs(frac - standardFracs[i].val);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closest = standardFracs[i];
+        }
+      }
+      
+      let finalWhole = whole;
+      let finalFracText = closest.text;
+      
+      if (closest.val === 1.0) {
+        finalWhole += 1;
+        finalFracText = "";
+      }
+      
+      if (finalWhole === 0 && finalFracText === "") {
+        return "1/4 tsp";
+      }
+      
+      const amount = finalWhole && finalFracText ? `${finalWhole} ${finalFracText}` : finalFracText || String(finalWhole);
+      return `${amount} tsp`;
+    }
+
+    // --- RICE LOGIC ---
+    let riceAmountType = "raw";
+    let riceOilUnit = "tsp";
+    let riceSaltUnit = "tsp";
+    let currentRiceOilMl = 0;
+    let currentRiceSaltGrams = 0;
+
+    const riceAmountInput = document.querySelector("#riceAmount");
+    const riceRawButton = document.querySelector("#riceRawButton");
+    const riceCookedButton = document.querySelector("#riceCookedButton");
+    const riceRawVal = document.querySelector("#riceRaw");
+    const riceCookedVal = document.querySelector("#riceCooked");
+    const riceWaterVal = document.querySelector("#riceWater");
+    const riceOilVal = document.querySelector("#riceOil");
+    const riceSaltVal = document.querySelector("#riceSalt");
+    const riceOilCard = document.querySelector("#riceOilCard");
+    const riceSaltCard = document.querySelector("#riceSaltCard");
+    const riceOilUnitHint = document.querySelector("#riceOilUnitHint");
+    const riceSaltUnitHint = document.querySelector("#riceSaltUnitHint");
+    const riceTimeVal = document.querySelector("#riceTime");
+    const riceAmountHelp = document.querySelector("#riceAmountHelp");
+
+    function updateRiceSeasoningUnits() {
+      riceOilVal.textContent = riceOilUnit === "ml" ? formatMl(currentRiceOilMl) : formatTsp(currentRiceOilMl / ML_PER_TSP);
+      riceSaltVal.textContent = riceSaltUnit === "g" ? formatWeight(currentRiceSaltGrams) : formatTsp(currentRiceSaltGrams / SALT_GRAMS_PER_TSP);
+      riceOilUnitHint.textContent = riceOilUnit === "ml" ? "tsp" : "ml";
+      riceSaltUnitHint.textContent = riceSaltUnit === "g" ? "tsp" : "g";
+    }
+
+    function calculateRice() {
+      const amount = Number(riceAmountInput.value);
+      const isValid = Number.isFinite(amount) && amount > 0;
+
+      if (!isValid) {
+        riceRawVal.textContent = "-";
+        riceCookedVal.textContent = "-";
+        riceWaterVal.textContent = "-";
+        riceOilVal.textContent = "-";
+        riceSaltVal.textContent = "-";
+        currentRiceOilMl = 0;
+        currentRiceSaltGrams = 0;
+        riceTimeVal.textContent = `${RICE_COOK_TIME_MINUTES}m`;
+        riceAmountHelp.textContent = "Enter an amount greater than zero.";
+        return;
+      }
+
+      const rawGrams = riceAmountType === "raw" ? amount : amount / COOKED_YIELD_FACTOR;
+      const cookedGrams = rawGrams * COOKED_YIELD_FACTOR;
+
+      riceRawVal.textContent = formatWeight(rawGrams);
+      riceCookedVal.textContent = formatWeight(cookedGrams);
+      riceWaterVal.textContent = formatMl(rawGrams * WATER_ML_PER_RAW_GRAM);
+      currentRiceOilMl = rawGrams * RICE_OIL_ML_PER_RAW_GRAM;
+      currentRiceSaltGrams = rawGrams * RICE_SALT_GRAMS_PER_RAW_GRAM;
+      updateRiceSeasoningUnits();
+      riceTimeVal.textContent = `${RICE_COOK_TIME_MINUTES}m`;
+      riceAmountHelp.textContent = `Simmer for ${RICE_COOK_TIME_MINUTES} minutes, then rest covered for ${RICE_REST_TIME_MINUTES} minutes.`;
+    }
+
+    function setRiceAmountType(nextType) {
+      riceAmountType = nextType;
+      riceRawButton.setAttribute("aria-pressed", String(riceAmountType === "raw"));
+      riceCookedButton.setAttribute("aria-pressed", String(riceAmountType === "cooked"));
+      calculateRice();
+    }
+
+    riceAmountInput.addEventListener("input", calculateRice);
+    riceRawButton.addEventListener("click", () => setRiceAmountType("raw"));
+    riceCookedButton.addEventListener("click", () => setRiceAmountType("cooked"));
+    riceOilCard.addEventListener("click", () => {
+      riceOilUnit = riceOilUnit === "ml" ? "tsp" : "ml";
+      updateRiceSeasoningUnits();
+    });
+    riceSaltCard.addEventListener("click", () => {
+      riceSaltUnit = riceSaltUnit === "g" ? "tsp" : "g";
+      updateRiceSeasoningUnits();
+    });
+
+    // --- CHICKEN LOGIC ---
+    let chickenOilUnit = "tsp";
+    let chickenSaltUnit = "tsp";
+    let chickenGarlicUnit = "tsp";
+    let chickenPepperUnit = "tsp";
+    let chickenPaprikaUnit = "tsp";
+    let chickenCurryUnit = "tsp";
+
+    let currentChickenOilMl = 0;
+    let currentChickenSaltGrams = 0;
+    let currentChickenGarlicGrams = 0;
+    let currentChickenPepperGrams = 0;
+    let currentChickenPaprikaGrams = 0;
+    let currentChickenCurryGrams = 0;
+
+    const chickenAmountInput = document.querySelector("#chickenAmount");
+    const chickenWeightVal = document.querySelector("#chickenWeight");
+    
+    const chickenOilVal = document.querySelector("#chickenOil");
+    const chickenSaltVal = document.querySelector("#chickenSalt");
+    const chickenGarlicVal = document.querySelector("#chickenGarlic");
+    const chickenPepperVal = document.querySelector("#chickenPepper");
+    const chickenPaprikaVal = document.querySelector("#chickenPaprika");
+    const chickenCurryVal = document.querySelector("#chickenCurry");
+    
+    const chickenOilCard = document.querySelector("#chickenOilCard");
+    const chickenSaltCard = document.querySelector("#chickenSaltCard");
+    const chickenGarlicCard = document.querySelector("#chickenGarlicCard");
+    const chickenPepperCard = document.querySelector("#chickenPepperCard");
+    const chickenPaprikaCard = document.querySelector("#chickenPaprikaCard");
+    const chickenCurryCard = document.querySelector("#chickenCurryCard");
+
+    const chickenOilUnitHint = document.querySelector("#chickenOilUnitHint");
+    const chickenSaltUnitHint = document.querySelector("#chickenSaltUnitHint");
+    const chickenGarlicUnitHint = document.querySelector("#chickenGarlicUnitHint");
+    const chickenPepperUnitHint = document.querySelector("#chickenPepperUnitHint");
+    const chickenPaprikaUnitHint = document.querySelector("#chickenPaprikaUnitHint");
+    const chickenCurryUnitHint = document.querySelector("#chickenCurryUnitHint");
+    
+
+    function updateChickenSeasoningUnits() {
+      chickenOilVal.textContent = chickenOilUnit === "ml" ? formatMl(currentChickenOilMl) : formatTsp(currentChickenOilMl / ML_PER_TSP);
+      chickenSaltVal.textContent = chickenSaltUnit === "g" ? formatWeight(currentChickenSaltGrams) : formatTsp(currentChickenSaltGrams / SALT_GRAMS_PER_TSP);
+      
+      // Spices conversion
+      chickenGarlicVal.textContent = chickenGarlicUnit === "g" ? formatWeight(currentChickenGarlicGrams) : formatTsp(currentChickenGarlicGrams / GARLIC_GRAMS_PER_TSP);
+      chickenPepperVal.textContent = chickenPepperUnit === "g" ? formatWeight(currentChickenPepperGrams) : formatTsp(currentChickenPepperGrams / PEPPER_GRAMS_PER_TSP);
+      chickenPaprikaVal.textContent = chickenPaprikaUnit === "g" ? formatWeight(currentChickenPaprikaGrams) : formatTsp(currentChickenPaprikaGrams / PAPRIKA_GRAMS_PER_TSP);
+      chickenCurryVal.textContent = chickenCurryUnit === "g" ? formatWeight(currentChickenCurryGrams) : formatTsp(currentChickenCurryGrams / CURRY_GRAMS_PER_TSP);
+
+      chickenOilUnitHint.textContent = chickenOilUnit === "ml" ? "tsp" : "ml";
+      chickenSaltUnitHint.textContent = chickenSaltUnit === "g" ? "tsp" : "g";
+      chickenGarlicUnitHint.textContent = chickenGarlicUnit === "g" ? "tsp" : "g";
+      chickenPepperUnitHint.textContent = chickenPepperUnit === "g" ? "tsp" : "g";
+      chickenPaprikaUnitHint.textContent = chickenPaprikaUnit === "g" ? "tsp" : "g";
+      chickenCurryUnitHint.textContent = chickenCurryUnit === "g" ? "tsp" : "g";
+    }
+
+    function calculateChicken() {
+      const amount = Number(chickenAmountInput.value);
+      const isValid = Number.isFinite(amount) && amount > 0;
+
+      if (!isValid) {
+        chickenWeightVal.textContent = "-";
+        chickenOilVal.textContent = "-";
+        chickenSaltVal.textContent = "-";
+        chickenGarlicVal.textContent = "-";
+        chickenPepperVal.textContent = "-";
+        chickenPaprikaVal.textContent = "-";
+        chickenCurryVal.textContent = "-";
+        currentChickenOilMl = 0;
+        currentChickenSaltGrams = 0;
+        currentChickenGarlicGrams = 0;
+        currentChickenPepperGrams = 0;
+        currentChickenPaprikaGrams = 0;
+        currentChickenCurryGrams = 0;
+        
+        return;
+      }
+
+      chickenWeightVal.textContent = formatWeight(amount);
+      
+      // Calculations:
+      // Salt: 1/600 tsp per gram
+      const saltTsp = amount / 600;
+      currentChickenSaltGrams = saltTsp * SALT_GRAMS_PER_TSP;
+      
+      // Oil: 4 tsp per 1200g = 1/300 tsp per gram
+      const oilTsp = amount / 300;
+      currentChickenOilMl = oilTsp * ML_PER_TSP;
+      
+      // Garlic: 1 tsp per 1200g = 1/1200 tsp per gram
+      const garlicTsp = amount / 1200;
+      currentChickenGarlicGrams = garlicTsp * GARLIC_GRAMS_PER_TSP;
+
+      // Pepper: 1 tsp per 1200g = 1/1200 tsp per gram
+      const pepperTsp = amount / 1200;
+      currentChickenPepperGrams = pepperTsp * PEPPER_GRAMS_PER_TSP;
+
+      // Paprika: 1/2 tsp per 1200g = 1/2400 tsp per gram
+      const paprikaTsp = amount / 2400;
+      currentChickenPaprikaGrams = paprikaTsp * PAPRIKA_GRAMS_PER_TSP;
+
+      // Curry: 1/4 tsp per 1200g = 1/4800 tsp per gram
+      const curryTsp = amount / 4800;
+      currentChickenCurryGrams = curryTsp * CURRY_GRAMS_PER_TSP;
+      
+      updateChickenSeasoningUnits();
+      
+    }
+
+    chickenAmountInput.addEventListener("input", calculateChicken);
+    chickenOilCard.addEventListener("click", () => {
+      chickenOilUnit = chickenOilUnit === "ml" ? "tsp" : "ml";
+      updateChickenSeasoningUnits();
+    });
+    chickenSaltCard.addEventListener("click", () => {
+      chickenSaltUnit = chickenSaltUnit === "g" ? "tsp" : "g";
+      updateChickenSeasoningUnits();
+    });
+    chickenGarlicCard.addEventListener("click", () => {
+      chickenGarlicUnit = chickenGarlicUnit === "g" ? "tsp" : "g";
+      updateChickenSeasoningUnits();
+    });
+    chickenPepperCard.addEventListener("click", () => {
+      chickenPepperUnit = chickenPepperUnit === "g" ? "tsp" : "g";
+      updateChickenSeasoningUnits();
+    });
+    chickenPaprikaCard.addEventListener("click", () => {
+      chickenPaprikaUnit = chickenPaprikaUnit === "g" ? "tsp" : "g";
+      updateChickenSeasoningUnits();
+    });
+    chickenCurryCard.addEventListener("click", () => {
+      chickenCurryUnit = chickenCurryUnit === "g" ? "tsp" : "g";
+      updateChickenSeasoningUnits();
+    });
+
+
+    // --- BEEF LOGIC ---
+    let beefOilUnit = "tsp";
+    let beefSaltUnit = "tsp";
+    let beefMeatDressingUnit = "tsp";
+
+    let currentBeefOilMl = 0;
+    let currentBeefSaltGrams = 0;
+    let currentBeefMeatDressingGrams = 0;
+
+    const beefAmountInput = document.querySelector("#beefAmount");
+    const beefWeightVal = document.querySelector("#beefWeight");
+    const beefOilVal = document.querySelector("#beefOil");
+    const beefSaltVal = document.querySelector("#beefSalt");
+    const beefMeatDressingVal = document.querySelector("#beefMeatDressing");
+    
+    const beefOilCard = document.querySelector("#beefOilCard");
+    const beefSaltCard = document.querySelector("#beefSaltCard");
+    const beefMeatDressingCard = document.querySelector("#beefMeatDressingCard");
+
+    const beefOilUnitHint = document.querySelector("#beefOilUnitHint");
+    const beefSaltUnitHint = document.querySelector("#beefSaltUnitHint");
+    const beefMeatDressingUnitHint = document.querySelector("#beefMeatDressingUnitHint");
+    
+
+    function updateBeefSeasoningUnits() {
+      beefOilVal.textContent = beefOilUnit === "ml" ? formatMl(currentBeefOilMl) : formatTsp(currentBeefOilMl / ML_PER_TSP);
+      beefSaltVal.textContent = beefSaltUnit === "g" ? formatWeight(currentBeefSaltGrams) : formatTsp(currentBeefSaltGrams / SALT_GRAMS_PER_TSP);
+      beefMeatDressingVal.textContent = beefMeatDressingUnit === "g" ? formatWeight(currentBeefMeatDressingGrams) : formatTsp(currentBeefMeatDressingGrams / MEAT_DRESSING_GRAMS_PER_TSP);
+
+      beefOilUnitHint.textContent = beefOilUnit === "ml" ? "tsp" : "ml";
+      beefSaltUnitHint.textContent = beefSaltUnit === "g" ? "tsp" : "g";
+      beefMeatDressingUnitHint.textContent = beefMeatDressingUnit === "g" ? "tsp" : "g";
+    }
+
+    function calculateBeef() {
+      const amount = Number(beefAmountInput.value);
+      const isValid = Number.isFinite(amount) && amount > 0;
+
+      if (!isValid) {
+        beefWeightVal.textContent = "-";
+        beefOilVal.textContent = "-";
+        beefSaltVal.textContent = "-";
+        beefMeatDressingVal.textContent = "-";
+        currentBeefOilMl = 0;
+        currentBeefSaltGrams = 0;
+        currentBeefMeatDressingGrams = 0;
+        
+        return;
+      }
+
+      beefWeightVal.textContent = formatWeight(amount);
+      
+      // Calculations:
+      // Salt: 1/600 tsp per gram
+      const saltTsp = amount / 600;
+      currentBeefSaltGrams = saltTsp * SALT_GRAMS_PER_TSP;
+      
+      // Oil: 1 tsp per 200g = 1/200 tsp per gram
+      const oilTsp = amount / 200;
+      currentBeefOilMl = oilTsp * ML_PER_TSP;
+      
+      // Meat Dressing: 1/3 tsp per 200g = 1/600 tsp per gram
+      const dressingTsp = amount / 600;
+      currentBeefMeatDressingGrams = dressingTsp * MEAT_DRESSING_GRAMS_PER_TSP;
+
+      updateBeefSeasoningUnits();
+      
+    }
+
+    beefAmountInput.addEventListener("input", calculateBeef);
+    beefOilCard.addEventListener("click", () => {
+      beefOilUnit = beefOilUnit === "ml" ? "tsp" : "ml";
+      updateBeefSeasoningUnits();
+    });
+    beefSaltCard.addEventListener("click", () => {
+      beefSaltUnit = beefSaltUnit === "g" ? "tsp" : "g";
+      updateBeefSeasoningUnits();
+    });
+    beefMeatDressingCard.addEventListener("click", () => {
+      beefMeatDressingUnit = beefMeatDressingUnit === "g" ? "tsp" : "g";
+      updateBeefSeasoningUnits();
+    });
+
+
+    // --- FISH LOGIC ---
+    let fishOilUnit = "tsp";
+    let fishSaltUnit = "tsp";
+    let fishPepperUnit = "tsp";
+    let fishGarlicUnit = "tsp";
+
+    let currentFishOilMl = 0;
+    let currentFishSaltGrams = 0;
+    let currentFishPepperGrams = 0;
+    let currentFishGarlicGrams = 0;
+
+    const fishAmountInput = document.querySelector("#fishAmount");
+    const fishWeightVal = document.querySelector("#fishWeight");
+    const fishOilVal = document.querySelector("#fishOil");
+    const fishSaltVal = document.querySelector("#fishSalt");
+    const fishPepperVal = document.querySelector("#fishPepper");
+    const fishGarlicVal = document.querySelector("#fishGarlic");
+    
+    const fishOilCard = document.querySelector("#fishOilCard");
+    const fishSaltCard = document.querySelector("#fishSaltCard");
+    const fishPepperCard = document.querySelector("#fishPepperCard");
+    const fishGarlicCard = document.querySelector("#fishGarlicCard");
+
+    const fishOilUnitHint = document.querySelector("#fishOilUnitHint");
+    const fishSaltUnitHint = document.querySelector("#fishSaltUnitHint");
+    const fishPepperUnitHint = document.querySelector("#fishPepperUnitHint");
+    const fishGarlicUnitHint = document.querySelector("#fishGarlicUnitHint");
+    
+
+    function updateFishSeasoningUnits() {
+      fishOilVal.textContent = fishOilUnit === "ml" ? formatMl(currentFishOilMl) : formatTsp(currentFishOilMl / ML_PER_TSP);
+      fishSaltVal.textContent = fishSaltUnit === "g" ? formatWeight(currentFishSaltGrams) : formatTsp(currentFishSaltGrams / SALT_GRAMS_PER_TSP);
+      
+      // Spices conversion
+      fishPepperVal.textContent = fishPepperUnit === "g" ? formatWeight(currentFishPepperGrams) : formatTsp(currentFishPepperGrams / PEPPER_GRAMS_PER_TSP);
+      fishGarlicVal.textContent = fishGarlicUnit === "g" ? formatWeight(currentFishGarlicGrams) : formatTsp(currentFishGarlicGrams / GARLIC_GRAMS_PER_TSP);
+
+      fishOilUnitHint.textContent = fishOilUnit === "ml" ? "tsp" : "ml";
+      fishSaltUnitHint.textContent = fishSaltUnit === "g" ? "tsp" : "g";
+      fishPepperUnitHint.textContent = fishPepperUnit === "g" ? "tsp" : "g";
+      fishGarlicUnitHint.textContent = fishGarlicUnit === "g" ? "tsp" : "g";
+    }
+
+    function calculateFish() {
+      const amount = Number(fishAmountInput.value);
+      const isValid = Number.isFinite(amount) && amount > 0;
+
+      if (!isValid) {
+        fishWeightVal.textContent = "-";
+        fishOilVal.textContent = "-";
+        fishSaltVal.textContent = "-";
+        fishPepperVal.textContent = "-";
+        fishGarlicVal.textContent = "-";
+        currentFishOilMl = 0;
+        currentFishSaltGrams = 0;
+        currentFishPepperGrams = 0;
+        currentFishGarlicGrams = 0;
+        
+        return;
+      }
+
+      fishWeightVal.textContent = formatWeight(amount);
+      
+      // Calculations:
+      // Salt: 1/600 tsp per gram
+      const saltTsp = amount / 600;
+      currentFishSaltGrams = saltTsp * SALT_GRAMS_PER_TSP;
+      
+      // Oil: 2 tsp per 450g = 1/225 tsp per gram
+      const oilTsp = amount / 225;
+      currentFishOilMl = oilTsp * ML_PER_TSP;
+      
+      // Pepper: 1/2 tsp per 450g = 1/900 tsp per gram
+      const pepperTsp = amount / 900;
+      currentFishPepperGrams = pepperTsp * PEPPER_GRAMS_PER_TSP;
+
+      // Garlic: 1/2 tsp per 450g = 1/900 tsp per gram
+      const garlicTsp = amount / 900;
+      currentFishGarlicGrams = garlicTsp * GARLIC_GRAMS_PER_TSP;
+
+      updateFishSeasoningUnits();
+      
+    }
+
+    fishAmountInput.addEventListener("input", calculateFish);
+    fishOilCard.addEventListener("click", () => {
+      fishOilUnit = fishOilUnit === "ml" ? "tsp" : "ml";
+      updateFishSeasoningUnits();
+    });
+    fishSaltCard.addEventListener("click", () => {
+      fishSaltUnit = fishSaltUnit === "g" ? "tsp" : "g";
+      updateFishSeasoningUnits();
+    });
+    fishPepperCard.addEventListener("click", () => {
+      fishPepperUnit = fishPepperUnit === "g" ? "tsp" : "g";
+      updateFishSeasoningUnits();
+    });
+    fishGarlicCard.addEventListener("click", () => {
+      fishGarlicUnit = fishGarlicUnit === "g" ? "tsp" : "g";
+      updateFishSeasoningUnits();
+    });
+
+    // Run initial calculations
+    calculateRice();
+    calculateChicken();
+    calculateBeef();
+    calculateFish();
+
+    // Service Worker Registration
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js");
+      });
+    }
+  </script>
+</body>
+</html>

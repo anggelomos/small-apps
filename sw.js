@@ -1,20 +1,20 @@
-const CACHE_VERSION = "small-apps-v2";
+const CACHE_VERSION = "small-apps-v3";
 const APP_SHELL = [
   "/",
   "/index.html",
-  "/rice-cook/",
-  "/rice-cook/index.html",
+  "/meal-prep-cook/",
+  "/meal-prep-cook/index.html",
   "/meal-prep/",
   "/meal-prep/index.html",
   "/manifest.webmanifest",
   "/assets/app-icon.svg",
-  "/assets/rice-cook-favicon.svg",
+  "/assets/meal-prep-cook-favicon.svg",
   "/assets/apple-touch-icon.png",
   "/assets/icon-192.png",
   "/assets/icon-maskable-192.png",
   "/assets/icon-512.png",
   "/assets/icon-maskable-512.png",
-  "/assets/shortcut-rice.png",
+  "/assets/shortcut-meal-prep-cook.png",
   "/assets/shortcut-meal-prep.png"
 ];
 

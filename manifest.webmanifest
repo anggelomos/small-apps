@@ -38,10 +38,10 @@
   ],
   "shortcuts": [
     {
-      "name": "Rice Cook",
-      "short_name": "Rice",
-      "description": "Measure rice, water, oil, salt, and timing.",
-      "url": "/rice-cook/",
+      "name": "Meal Prep Cook",
+      "short_name": "Cook",
+      "description": "Measure rice, chicken, beef, or fish and calculate exact water, salt, oil, and seasonings.",
+      "url": "/meal-prep-cook/",
       "icons": [{ "src": "/assets/shortcut-rice.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
