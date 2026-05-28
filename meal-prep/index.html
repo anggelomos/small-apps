@@ -1158,7 +1158,7 @@
         const name = capitalizeFirst(ingredient.label[amountMode]);
         const qty = formatAmountValue(total.amount, total.unit);
 
-        return `<li>${name} — ${qty}</li>`;
+        return `<li>${name} - ${qty}</li>`;
       }).join("");
 
       return `<ul class="week-list">${items}</ul>`;
