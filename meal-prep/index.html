@@ -419,21 +419,20 @@
     }
 
     .cell-button:hover,
-    .cell-button:focus-visible,
-    .header-button:hover,
-    .header-button:focus-visible {
+    .cell-button:focus-visible {
       background: var(--accent-tint);
       outline: 0;
     }
 
-    tbody th:hover,
-    tbody th:focus-within {
+    thead th:hover,
+    tbody th:hover {
       background: var(--accent-tint);
     }
 
     .header-button:hover,
     .header-button:focus-visible {
       color: var(--accent-strong);
+      outline: 0;
     }
 
     .cell-button:disabled,
@@ -472,8 +471,7 @@
       text-decoration-color: #c8ccd2;
     }
 
-    .disabled-scope:hover,
-    .disabled-scope:focus-within {
+    .disabled-scope:hover {
       background: var(--surface-muted);
     }
 
@@ -1211,6 +1209,7 @@
       }
 
       toggleScope(getRealCellKeysForDay(button.dataset.day));
+      button.blur();
       render();
     });
 
@@ -1220,6 +1219,7 @@
 
       if (mealHeader) {
         toggleScope(getRealCellKeysForMeal(mealHeader.dataset.meal));
+        mealHeader.querySelector("button")?.blur();
         render();
         return;
       }
