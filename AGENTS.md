@@ -6,21 +6,22 @@ This repo hosts small public apps for personal use. Each app must live in its ow
 ## App Structure
 - Root dashboard: `index.html`.
 - App folders: `{app-name}/index.html`, for example `rice-cook/index.html`.
-- Every app needs its own dashboard card, simple logo, and page icon/favicon when practical.
+- Every app needs its own dashboard card, simple logo, and page icon/favicon.
 - Keep app-specific constants near the top of the app HTML so values are easy to tune.
 
 ## Style
-- Use a clean, modern, mostly white aesthetic: black text, soft gray borders, subtle shadows, and restrained accent color.
+- Use a clean, modern, mostly white aesthetic as OpenAI's or Stripe's aesthetic: black text, soft gray borders, subtle shadows, and restrained accent color.
 - Favor mobile-first layouts, generous spacing, large touch targets, and readable numeric outputs.
 - Dashboard app cards should be square grid tiles with an icon, short title, and compact description.
 - App pages should feel utilitarian and calm: concise copy, clear sections, no dense explanations.
-- Current accent pattern: green `#10a37f`, soft green `#f0fbf7`, border `#e7e7e7`, muted text `#666`.
+- When creating a new app or making aesthetic changes, first imagine and generate images for three possible visual directions, then discuss them with the user to confirm the expected result before implementing.
 
 ## Development
 - Before edits, inspect current files and preserve existing simple static patterns.
 - For each new app or update, validate core calculations/interactions locally where possible.
 - After finishing, run `git status --short`.
-- Commit, push, and deploy every completed change.
+- Before committing, pushing, or deploying, verify the changes locally with the user and ask for their approval.
+- After user approval, commit, push, and deploy every completed change.
 
 ## Deployment
 Use the Vercel-linked repo workflow:
