@@ -1,17 +1,24 @@
-import { execFileSync } from "node:child_process";
+import { execSync } from "node:child_process";
 
 const alias = process.argv[2] || "ang-small-apps.vercel.app";
-const npx = process.platform === "win32" ? "npx.cmd" : "npx";
 
-function run(args) {
-  return execFileSync(npx, args, {
+function assertSafeHost(value, label) {
+  if (!/^[a-zA-Z0-9.-]+$/.test(value)) {
+    throw new Error(`${label} contains unsupported characters: ${value}`);
+  }
+}
+
+function run(command) {
+  return execSync(command, {
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"]
   });
 }
 
+assertSafeHost(alias, "Alias");
+
 console.log("Deploying to Vercel production...");
-const deployOutput = run(["vercel", "--prod", "--yes"]);
+const deployOutput = run("npx vercel --prod --yes");
 process.stdout.write(deployOutput);
 
 const urlMatch =
@@ -23,8 +30,9 @@ if (!urlMatch) {
 }
 
 const deploymentHost = urlMatch[1].replace(/^https?:\/\//, "").replace(/\/$/, "");
+assertSafeHost(deploymentHost, "Deployment host");
 
 console.log(`Updating alias ${alias} -> ${deploymentHost}...`);
-const aliasOutput = run(["vercel", "alias", "set", deploymentHost, alias]);
+const aliasOutput = run(`npx vercel alias set ${deploymentHost} ${alias}`);
 process.stdout.write(aliasOutput);
 console.log(`Done: https://${alias}`);
