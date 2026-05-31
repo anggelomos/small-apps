@@ -30,9 +30,9 @@
         color: "#1769e0",
         officialLocation: "Edil Hugo Prato, from Mario Cassinoni to Acevedo Diaz",
         note: "Very close. Good for a quick shop.",
-        start: { label: "Mario Cassinoni", coords: [-34.90858, -56.16462] },
-        end: { label: "Acevedo Diaz", coords: [-34.9085211, -56.1657658] },
-        segments: [[[-34.90858, -56.16462], [-34.9085211, -56.1657658]]]
+        start: { label: "Mario Cassinoni", coords: [-34.90856, -56.16462] },
+        end: { label: "Acevedo Diaz", coords: [-34.90851, -56.16575] },
+        segments: [[[-34.90856, -56.16462], [-34.90854, -56.16514], [-34.90851, -56.16575]]]
       },
       {
         id: "juan-paullier",
@@ -42,9 +42,9 @@
         color: "#0f8f70",
         officialLocation: "Juan Paullier, from Av. Rivera to No. 1482",
         note: "Close, about 8-10 min.",
-        start: { label: "Av. Rivera", coords: [-34.89934, -56.16782] },
+        start: { label: "Av. Rivera", coords: [-34.89862, -56.16766] },
         end: { label: "No. 1482", coords: [-34.9005248, -56.1680309] },
-        segments: [[[-34.89934, -56.16782], [-34.9005248, -56.1680309]]]
+        segments: [[[-34.89862, -56.16766], [-34.89932, -56.16779], [-34.9005248, -56.1680309]]]
       },
       {
         id: "chana",
@@ -69,9 +69,9 @@
         start: { label: "Francisco Canaro", coords: [-34.89772, -56.16695] },
         end: { label: "Acevedo Diaz", coords: [-34.89755, -56.16733] },
         segments: [
-          [[-34.89772, -56.16695], [-34.89755, -56.16733]],
-          [[-34.90023, -56.1684306], [-34.90043, -56.16704]],
-          [[-34.89972, -56.16847], [-34.89884, -56.16592]]
+          [[-34.89772, -56.16695], [-34.89764, -56.16715], [-34.89755, -56.16733]],
+          [[-34.90023, -56.16843], [-34.90031, -56.16778], [-34.90043, -56.16704]],
+          [[-34.90124, -56.16858], [-34.90112, -56.16772], [-34.90102, -56.16678], [-34.90094, -56.16592]]
         ]
       },
       {
@@ -534,8 +534,8 @@
       fair.segments.forEach((segment) => {
         layers.push(L.polyline(segment, {
           color: fair.color,
-          weight: 7,
-          opacity: 0.88,
+          weight: 5,
+          opacity: 0.82,
           lineCap: "round",
           lineJoin: "round"
         }));
