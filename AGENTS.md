@@ -13,6 +13,7 @@ This repo hosts small public apps for personal use. Each app must live in its ow
 - Use a clean, modern, mostly white aesthetic as OpenAI's or Stripe's aesthetic: black text, soft gray borders, subtle shadows, and restrained accent color.
 - Favor mobile-first layouts, generous spacing, large touch targets, and readable numeric outputs.
 - Dashboard app cards should be square grid tiles with an icon, short title, and compact description.
+- Dashboard app card descriptions must be 65 characters or less.
 - App pages should feel utilitarian and calm: concise copy, clear sections, no dense explanations.
 - When creating a new app or making aesthetic changes, first imagine and generate images for three possible visual directions, then discuss them with the user to confirm the expected result before implementing.
 

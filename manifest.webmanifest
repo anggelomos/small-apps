@@ -40,7 +40,7 @@
     {
       "name": "Meal Prep Cook",
       "short_name": "Cook",
-      "description": "Measure rice, chicken, beef, or fish and calculate exact water, salt, oil, and seasonings.",
+      "description": "Calculate water, salt, oil, and seasonings for proteins.",
       "url": "/meal-prep-cook/",
       "icons": [{ "src": "/assets/shortcut-rice.png", "sizes": "192x192", "type": "image/png" }]
     },
