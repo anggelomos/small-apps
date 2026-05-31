@@ -50,6 +50,13 @@
       "description": "Plan meals and total ingredients.",
       "url": "/meal-prep/",
       "icons": [{ "src": "/assets/shortcut-meal-prep.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Ferias Vecinales",
+      "short_name": "Ferias",
+      "description": "Map nearby Montevideo street markets.",
+      "url": "/ferias-vecinales/",
+      "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }

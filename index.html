@@ -164,6 +164,30 @@
       box-shadow: 0 22px 60px rgba(217, 107, 26, 0.12);
     }
 
+    .route-icon {
+      background: #ffffff !important;
+      box-shadow:
+        inset 0 0 0 1px #ececef,
+        0 8px 20px rgba(20, 30, 60, 0.07) !important;
+    }
+
+    .route-mark {
+      width: 2.78rem;
+      height: 2.78rem;
+    }
+
+    .route-mark path,
+    .route-mark circle {
+      vector-effect: non-scaling-stroke;
+    }
+
+    .app-card.route-card:hover,
+    .app-card.route-card:focus-visible {
+      border-color: rgba(23, 105, 224, 0.45);
+      background: #f8fbff;
+      box-shadow: 0 22px 60px rgba(23, 105, 224, 0.12);
+    }
+
     .app-card strong {
       display: block;
       margin-bottom: 0.3rem;
@@ -233,6 +257,21 @@
         <span class="app-copy">
           <strong>Meal Prep</strong>
           <span>Tap weekly meals on or off and total raw or cooked ingredients.</span>
+        </span>
+      </a>
+
+      <a class="app-card route-card" href="/ferias-vecinales/">
+        <span class="icon route-icon" aria-hidden="true">
+          <svg class="route-mark" viewBox="0 0 48 48">
+            <path d="M10 32c7 0 7-17 14-17s7 17 14 17" fill="none" stroke="#15181d" stroke-width="3.4" stroke-linecap="round"></path>
+            <circle cx="10" cy="32" r="3.7" fill="#10a37f"></circle>
+            <circle cx="24" cy="15" r="3.7" fill="#f08a3c"></circle>
+            <circle cx="38" cy="32" r="3.7" fill="#1769e0"></circle>
+          </svg>
+        </span>
+        <span class="app-copy">
+          <strong>Ferias Vecinales</strong>
+          <span>View nearby Montevideo street markets on a map and toggle each feria on or off.</span>
         </span>
       </a>
     </section>

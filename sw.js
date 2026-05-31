@@ -1,4 +1,4 @@
-const CACHE_VERSION = "small-apps-v3";
+const CACHE_VERSION = "small-apps-v4";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -6,6 +6,8 @@ const APP_SHELL = [
   "/meal-prep-cook/index.html",
   "/meal-prep/",
   "/meal-prep/index.html",
+  "/ferias-vecinales/",
+  "/ferias-vecinales/index.html",
   "/manifest.webmanifest",
   "/assets/app-icon.svg",
   "/assets/meal-prep-cook-favicon.svg",

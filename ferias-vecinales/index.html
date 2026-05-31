@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Map of nearby Montevideo street markets from Acevedo Diaz 1722.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Ferias Vecinales">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Ferias Vecinales</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://tile.openstreetmap.org">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ffffff'/%3E%3Cpath d='M14 43c9 0 9-22 18-22s9 22 18 22' fill='none' stroke='%2315181d' stroke-width='5' stroke-linecap='round'/%3E%3Ccircle cx='14' cy='43' r='5' fill='%2310a37f'/%3E%3Ccircle cx='32' cy='21' r='5' fill='%23f08a3c'/%3E%3Ccircle cx='50' cy='43' r='5' fill='%235b6ee1'/%3E%3C/svg%3E">
+  <script>
+    const HOME = {
+      label: "Acevedo Diaz 1722",
+      coords: [-34.8953614, -56.1672204],
+      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Acevedo+D%C3%ADaz+1722%2C+Montevideo"
+    };
+
+    const FERIAS = [
+      {
+        id: "hugo-prato",
+        name: "Edil Hugo Prato",
+        day: "Tue",
+        time: "7h - 14h",
+        color: "#1769e0",
+        officialLocation: "Edil Hugo Prato, from Mario Cassinoni to Acevedo Diaz",
+        note: "Very close. Good for a quick shop.",
+        start: { label: "Mario Cassinoni", coords: [-34.90858, -56.16462] },
+        end: { label: "Acevedo Diaz", coords: [-34.9085211, -56.1657658] },
+        segments: [[[-34.90858, -56.16462], [-34.9085211, -56.1657658]]]
+      },
+      {
+        id: "juan-paullier",
+        name: "Juan Paullier",
+        day: "Tue",
+        time: "7h - 14h",
+        color: "#0f8f70",
+        officialLocation: "Juan Paullier, from Av. Rivera to No. 1482",
+        note: "Close, about 8-10 min.",
+        start: { label: "Av. Rivera", coords: [-34.89934, -56.16782] },
+        end: { label: "No. 1482", coords: [-34.9005248, -56.1680309] },
+        segments: [[[-34.89934, -56.16782], [-34.9005248, -56.1680309]]]
+      },
+      {
+        id: "chana",
+        name: "Chana",
+        day: "Fri",
+        time: "7h - 14h",
+        color: "#c74433",
+        officialLocation: "Chana, from Gaboto to Emilio Frugoni",
+        note: "Close or near the 10 min edge depending on the route.",
+        start: { label: "Gaboto", coords: [-34.9103982, -56.1770937] },
+        end: { label: "Emilio Frugoni", coords: [-34.9065858, -56.1752331] },
+        segments: [[[-34.9103982, -56.1770937], [-34.9065858, -56.1752331]]]
+      },
+      {
+        id: "acevedo-canaro",
+        name: "Acevedo Diaz",
+        day: "Sat",
+        time: "7h - 14h",
+        color: "#d97706",
+        officialLocation: "Acevedo Diaz and Francisco Canaro. Perimeter: Ana Monterroso de Lavalleja to Acevedo Diaz. Extension: Palmar from Juan Paullier to Mario Cassinoni",
+        note: "The most convenient from home.",
+        start: { label: "Francisco Canaro", coords: [-34.89772, -56.16695] },
+        end: { label: "Acevedo Diaz", coords: [-34.89755, -56.16733] },
+        segments: [
+          [[-34.89772, -56.16695], [-34.89755, -56.16733]],
+          [[-34.90023, -56.1684306], [-34.90043, -56.16704]],
+          [[-34.89972, -56.16847], [-34.89884, -56.16592]]
+        ]
+      },
+      {
+        id: "general-pagola",
+        name: "General Pagola",
+        day: "Sat",
+        time: "7h - 15h",
+        color: "#7c3aed",
+        officialLocation: "General Pagola, from Duvimioso Terra to Cufre",
+        note: "Nearby alternative, probably 9-12 min.",
+        start: { label: "Duvimioso Terra", coords: [-34.88956, -56.16578] },
+        end: { label: "Cufre", coords: [-34.8896466, -56.1649563] },
+        segments: [[[-34.88956, -56.16578], [-34.8896466, -56.1649563]]]
+      },
+      {
+        id: "tristan-narvaja",
+        name: "Tristan Narvaja",
+        day: "Sun",
+        time: "7h - 15h",
+        color: "#0891b2",
+        officialLocation: "Tristan Narvaja",
+        note: "Useful for market shopping, but larger and less quick.",
+        start: { label: "La Paz", coords: [-34.9028005, -56.1769779] },
+        end: { label: "18 de Julio", coords: [-34.90694, -56.17478] },
+        segments: [[[-34.9028005, -56.1769779], [-34.90694, -56.17478]]]
+      }
+    ];
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --ink: #15181d;
+      --muted: #666f7b;
+      --line: #e6e8ec;
+      --shadow: 0 18px 44px rgba(15, 23, 42, 0.13);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body,
+    .app,
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--surface);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .app {
+      position: relative;
+      min-height: 100vh;
+    }
+
+    #map {
+      min-height: 100vh;
+      background: #eef1f4;
+    }
+
+    .topbar {
+      position: fixed;
+      top: max(0.85rem, env(safe-area-inset-top));
+      left: 0.85rem;
+      z-index: 650;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      max-width: calc(100vw - 1.7rem);
+      padding: 0.62rem 0.72rem;
+      border: 1px solid rgba(230, 232, 236, 0.95);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.12);
+      backdrop-filter: blur(14px);
+    }
+
+    .route-mark {
+      flex: 0 0 auto;
+      width: 2.45rem;
+      height: 2.45rem;
+    }
+
+    .title-wrap {
+      min-width: 0;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 1.1rem;
+      line-height: 1.1;
+      font-weight: 760;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .subtitle {
+      display: block;
+      margin-top: 0.15rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .panel-toggle {
+      position: fixed;
+      top: max(0.85rem, env(safe-area-inset-top));
+      right: 0.85rem;
+      z-index: 660;
+      display: none;
+      min-height: 2.5rem;
+      padding: 0 0.82rem;
+      border: 1px solid rgba(230, 232, 236, 0.95);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--ink);
+      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.12);
+      cursor: pointer;
+    }
+
+    .schedule-panel {
+      position: fixed;
+      right: 0.85rem;
+      top: max(4.05rem, calc(env(safe-area-inset-top) + 4.05rem));
+      z-index: 640;
+      width: min(23.5rem, calc(100vw - 1.7rem));
+      max-height: calc(100vh - 5.2rem - env(safe-area-inset-top));
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      border: 1px solid rgba(230, 232, 236, 0.95);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(14px);
+      transition: transform 180ms ease, opacity 180ms ease;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.95rem 1rem 0.72rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-head strong {
+      display: block;
+      color: var(--ink);
+      font-size: 0.98rem;
+      line-height: 1.2;
+      font-weight: 650;
+    }
+
+    .panel-head span {
+      display: block;
+      margin-top: 0.12rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.25;
+    }
+
+    .hide-button {
+      flex: 0 0 auto;
+      min-height: 2rem;
+      padding: 0 0.7rem;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .hide-button:hover,
+    .hide-button:focus-visible,
+    .panel-toggle:hover,
+    .panel-toggle:focus-visible {
+      border-color: #b9c0ca;
+      color: var(--ink);
+      outline: 0;
+    }
+
+    .fair-list {
+      display: grid;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      overflow: auto;
+      list-style: none;
+    }
+
+    .fair-item {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .fair-item:last-child {
+      border-bottom: 0;
+    }
+
+    .fair-control {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.78rem;
+      width: 100%;
+      padding: 0.85rem 1rem;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .fair-control input {
+      width: 1.15rem;
+      height: 1.15rem;
+      margin: 0.18rem 0 0;
+      accent-color: var(--fair-color);
+    }
+
+    .fair-copy {
+      min-width: 0;
+    }
+
+    .fair-title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      min-width: 0;
+    }
+
+    .swatch {
+      flex: 0 0 auto;
+      width: 0.72rem;
+      height: 0.72rem;
+      border-radius: 999px;
+      background: var(--fair-color);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--fair-color) 16%, transparent);
+    }
+
+    .fair-name {
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 0.94rem;
+      font-weight: 650;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .fair-time {
+      display: block;
+      margin-top: 0.12rem;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.3;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .fair-note {
+      display: block;
+      margin-top: 0.34rem;
+      color: #7c8490;
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .panel-hidden .schedule-panel {
+      pointer-events: none;
+      transform: translateY(-0.45rem);
+      opacity: 0;
+    }
+
+    .panel-hidden .panel-toggle {
+      display: block;
+    }
+
+    .leaflet-control-attribution {
+      font-size: 0.68rem;
+    }
+
+    .endpoint-marker {
+      display: grid;
+      place-items: center;
+      width: 1.18rem;
+      height: 1.18rem;
+      border: 3px solid #ffffff;
+      border-radius: 999px;
+      background: var(--marker-color);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.24);
+    }
+
+    .home-marker {
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      border: 2px solid #ffffff;
+      border-radius: 8px;
+      background: #15181d;
+      color: #ffffff;
+      box-shadow: 0 5px 16px rgba(15, 23, 42, 0.28);
+    }
+
+    .home-marker svg {
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+
+    .leaflet-popup-content {
+      margin: 0.75rem 0.9rem;
+      color: var(--ink);
+      font: 0.86rem/1.4 Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+
+    .leaflet-popup-content strong {
+      display: block;
+      margin-bottom: 0.12rem;
+    }
+
+    @media (max-width: 719px) {
+      body {
+        overflow: hidden;
+      }
+
+      .topbar {
+        right: 0.85rem;
+        padding-right: 3.35rem;
+      }
+
+      .panel-toggle {
+        display: block;
+        top: max(1.02rem, env(safe-area-inset-top));
+        min-width: 2.5rem;
+        padding: 0;
+      }
+
+      .panel-toggle .label {
+        display: none;
+      }
+
+      .schedule-panel {
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        max-height: min(62vh, 31rem);
+        border-right: 0;
+        border-bottom: 0;
+        border-left: 0;
+        border-radius: 14px 14px 0 0;
+      }
+
+      .panel-hidden .schedule-panel {
+        transform: translateY(calc(100% + 1rem));
+        opacity: 1;
+      }
+
+      .panel-head {
+        padding-top: 0.82rem;
+      }
+
+      .fair-control {
+        padding: 0.82rem 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div id="map" aria-label="Map of nearby Montevideo street markets"></div>
+
+    <header class="topbar">
+      <svg class="route-mark" viewBox="0 0 48 48" aria-hidden="true">
+        <rect x="4" y="4" width="40" height="40" rx="9" fill="#fff" stroke="#e6e8ec" stroke-width="1.5"></rect>
+        <path d="M10 32c7 0 7-17 14-17s7 17 14 17" fill="none" stroke="#15181d" stroke-width="3.4" stroke-linecap="round"></path>
+        <circle cx="10" cy="32" r="3.7" fill="#10a37f"></circle>
+        <circle cx="24" cy="15" r="3.7" fill="#f08a3c"></circle>
+        <circle cx="38" cy="32" r="3.7" fill="#5b6ee1"></circle>
+      </svg>
+      <div class="title-wrap">
+        <h1>Ferias Vecinales</h1>
+        <span class="subtitle">From Acevedo Diaz 1722</span>
+      </div>
+    </header>
+
+    <button class="panel-toggle" id="panelToggle" type="button" aria-expanded="true" aria-controls="schedulePanel">
+      <span class="label">Schedule</span>
+      <span aria-hidden="true">&#9776;</span>
+    </button>
+
+    <aside class="schedule-panel" id="schedulePanel" aria-label="Fair schedule and visibility">
+      <div class="panel-head">
+        <div>
+          <strong>Schedule</strong>
+          <span>Toggle each fair on the map.</span>
+        </div>
+        <button class="hide-button" id="hidePanel" type="button">Hide</button>
+      </div>
+      <ul class="fair-list" id="fairList"></ul>
+    </aside>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    const app = document.querySelector(".app");
+    const fairList = document.querySelector("#fairList");
+    const hidePanel = document.querySelector("#hidePanel");
+    const panelToggle = document.querySelector("#panelToggle");
+    const fairLayers = new Map();
+
+    function mapsUrlFor(point) {
+      const query = encodeURIComponent(`${point.coords[0]},${point.coords[1]}`);
+      return `https://www.google.com/maps/search/?api=1&query=${query}`;
+    }
+
+    function createEndpointIcon(color) {
+      return L.divIcon({
+        className: "",
+        html: `<span class="endpoint-marker" style="--marker-color: ${color}"></span>`,
+        iconSize: [19, 19],
+        iconAnchor: [9.5, 9.5]
+      });
+    }
+
+    function createHomeIcon() {
+      return L.divIcon({
+        className: "",
+        html: `
+          <span class="home-marker">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 11.2 12 4l8 7.2v7.3a1.5 1.5 0 0 1-1.5 1.5H15v-5.2H9V20H5.5A1.5 1.5 0 0 1 4 18.5v-7.3Z" fill="currentColor"></path>
+            </svg>
+          </span>
+        `,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+    }
+
+    function createFairLayer(fair) {
+      const layers = [];
+
+      fair.segments.forEach((segment) => {
+        layers.push(L.polyline(segment, {
+          color: fair.color,
+          weight: 7,
+          opacity: 0.88,
+          lineCap: "round",
+          lineJoin: "round"
+        }));
+      });
+
+      [fair.start, fair.end].forEach((point) => {
+        layers.push(
+          L.marker(point.coords, { icon: createEndpointIcon(fair.color), keyboard: true })
+            .bindPopup(`<strong>${fair.name}</strong>${point.label}<br>${fair.day}, ${fair.time}`)
+            .on("click", () => {
+              window.open(mapsUrlFor(point), "_blank", "noopener,noreferrer");
+            })
+        );
+      });
+
+      return L.layerGroup(layers);
+    }
+
+    function renderFairList() {
+      fairList.innerHTML = FERIAS.map((fair) => `
+        <li class="fair-item" style="--fair-color: ${fair.color}">
+          <label class="fair-control">
+            <input type="checkbox" data-fair-id="${fair.id}" checked>
+            <span class="fair-copy">
+              <span class="fair-title-row">
+                <span class="swatch" aria-hidden="true"></span>
+                <span class="fair-name">${fair.name}</span>
+              </span>
+              <span class="fair-time">${fair.day}, ${fair.time}</span>
+              <span class="fair-note">${fair.note}</span>
+            </span>
+          </label>
+        </li>
+      `).join("");
+    }
+
+    function setPanelVisible(isVisible) {
+      app.classList.toggle("panel-hidden", !isVisible);
+      panelToggle.setAttribute("aria-expanded", String(isVisible));
+    }
+
+    const map = L.map("map", {
+      zoomControl: false,
+      scrollWheelZoom: true
+    }).setView(HOME.coords, 15);
+
+    L.control.zoom({ position: "bottomleft" }).addTo(map);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    L.marker(HOME.coords, { icon: createHomeIcon(), zIndexOffset: 700 })
+      .bindPopup(`<strong>${HOME.label}</strong>Home base`)
+      .on("click", () => {
+        window.open(HOME.mapsUrl, "_blank", "noopener,noreferrer");
+      })
+      .addTo(map);
+
+    FERIAS.forEach((fair) => {
+      const layer = createFairLayer(fair).addTo(map);
+      fairLayers.set(fair.id, layer);
+    });
+
+    renderFairList();
+
+    const bounds = L.latLngBounds([HOME.coords]);
+    FERIAS.forEach((fair) => {
+      fair.segments.flat().forEach((coord) => bounds.extend(coord));
+    });
+    map.fitBounds(bounds, { paddingTopLeft: [28, 88], paddingBottomRight: [390, 80], maxZoom: 15 });
+
+    fairList.addEventListener("change", (event) => {
+      const input = event.target.closest("[data-fair-id]");
+
+      if (!input) {
+        return;
+      }
+
+      const layer = fairLayers.get(input.dataset.fairId);
+
+      if (!layer) {
+        return;
+      }
+
+      if (input.checked) {
+        layer.addTo(map);
+      } else {
+        layer.remove();
+      }
+    });
+
+    hidePanel.addEventListener("click", () => setPanelVisible(false));
+    panelToggle.addEventListener("click", () => setPanelVisible(app.classList.contains("panel-hidden")));
+
+    if (window.matchMedia("(max-width: 719px)").matches) {
+      map.fitBounds(bounds, { paddingTopLeft: [20, 86], paddingBottomRight: [20, 280], maxZoom: 15 });
+    }
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js");
+      });
+    }
+  </script>
+</body>
+</html>
