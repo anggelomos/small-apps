@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Generate rounded white PNG QR codes from URLs.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="QR Maker">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>QR Maker</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ffffff'/%3E%3Crect x='12' y='12' width='16' height='16' rx='3' fill='%2315181d'/%3E%3Crect x='36' y='12' width='16' height='16' rx='3' fill='%231769e0'/%3E%3Crect x='12' y='36' width='16' height='16' rx='3' fill='%231769e0'/%3E%3Cpath d='M38 38h5v5h-5zM47 38h5v5h-5zM38 47h5v5h-5zM47 47h5v5h-5z' fill='%2315181d'/%3E%3Crect x='16' y='16' width='8' height='8' rx='1.5' fill='%23ffffff'/%3E%3Crect x='40' y='16' width='8' height='8' rx='1.5' fill='%23ffffff'/%3E%3Crect x='16' y='40' width='8' height='8' rx='1.5' fill='%23ffffff'/%3E%3C/svg%3E">
+  <script src="qrcode.min.js" defer></script>
+  <script>
+    const DEFAULT_URL = "https://ang-small-apps.vercel.app/";
+    const DEFAULT_SIZE = 1024;
+    const DEFAULT_PADDING = 96;
+    const DEFAULT_RADIUS = 96;
+    const DEFAULT_QR_COLOR = "#15181d";
+    const BACKGROUND_COLOR = "#ffffff";
+    const ERROR_CORRECTION_LEVEL = "M";
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --surface-muted: #f3f5f8;
+      --ink: #15181d;
+      --ink-soft: #2f3744;
+      --muted: #747b86;
+      --line: #e6e9ee;
+      --line-strong: #d7dce4;
+      --accent: #1769e0;
+      --accent-soft: #eef5ff;
+      --accent-strong: #1057bd;
+      --danger: #b42318;
+      --shadow: 0 18px 44px rgba(15, 23, 42, 0.07);
+      --display-font: "Aptos Display", "Segoe UI Variable Display", "SF Pro Display", Inter, ui-sans-serif, system-ui, sans-serif;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    main {
+      width: min(100%, 72rem);
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .shell {
+      display: grid;
+      gap: 1.5rem;
+      padding: 1rem 0 2.5rem;
+    }
+
+    .hero {
+      display: grid;
+      gap: 0.7rem;
+      padding-top: 0.75rem;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .mark {
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 3.9rem;
+      height: 3.9rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      box-shadow: 0 8px 20px rgba(20, 30, 60, 0.07);
+    }
+
+    .mark svg {
+      width: 2.8rem;
+      height: 2.8rem;
+    }
+
+    .mark rect,
+    .mark path {
+      vector-effect: non-scaling-stroke;
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-family: var(--display-font);
+      font-size: clamp(2.1rem, 6vw, 3.35rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+      font-weight: 760;
+    }
+
+    h2 {
+      font-size: 1.05rem;
+      line-height: 1.2;
+      letter-spacing: 0;
+      font-weight: 680;
+    }
+
+    .tagline {
+      max-width: 37rem;
+      color: var(--ink-soft);
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+
+    .workspace {
+      display: grid;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .panel,
+    .preview {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      display: grid;
+      gap: 1.1rem;
+      padding: 1rem;
+    }
+
+    .section {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .field {
+      display: grid;
+      gap: 0.42rem;
+    }
+
+    label,
+    .field-label {
+      color: var(--ink);
+      font-size: 0.82rem;
+      font-weight: 640;
+      line-height: 1.2;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 3rem;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+      outline: 0;
+    }
+
+    input[type="url"],
+    select {
+      padding: 0 0.85rem;
+    }
+
+    input[type="url"]:focus,
+    select:focus {
+      border-color: rgba(23, 105, 224, 0.65);
+      box-shadow: 0 0 0 4px rgba(23, 105, 224, 0.1);
+    }
+
+    input[type="color"] {
+      height: 3rem;
+      padding: 0.35rem;
+      cursor: pointer;
+    }
+
+    input[type="range"] {
+      min-height: 2rem;
+      padding: 0;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .range-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .range-value {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.2;
+    }
+
+    .grid {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .actions {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 3rem;
+      padding: 0 1rem;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: 680;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      background: var(--accent-strong);
+      outline: 0;
+      transform: translateY(-1px);
+    }
+
+    .button.secondary {
+      border-color: var(--line-strong);
+      background: var(--surface);
+      color: var(--ink);
+    }
+
+    .button.secondary:hover,
+    .button.secondary:focus-visible {
+      border-color: rgba(23, 105, 224, 0.55);
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+    }
+
+    .button:disabled {
+      border-color: var(--line);
+      background: var(--surface-muted);
+      color: var(--muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .button svg {
+      width: 1.05rem;
+      height: 1.05rem;
+      stroke-width: 2.3;
+    }
+
+    .preview {
+      display: grid;
+      gap: 1rem;
+      justify-items: center;
+      padding: 1rem;
+    }
+
+    .preview-head {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.35;
+      text-align: right;
+    }
+
+    .canvas-wrap {
+      display: grid;
+      place-items: center;
+      width: min(100%, 28rem);
+      aspect-ratio: 1 / 1;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(45deg, #f4f6f8 25%, transparent 25%),
+        linear-gradient(-45deg, #f4f6f8 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f4f6f8 75%),
+        linear-gradient(-45deg, transparent 75%, #f4f6f8 75%),
+        #ffffff;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+      background-size: 16px 16px;
+      overflow: hidden;
+    }
+
+    canvas {
+      width: min(86%, 23rem);
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
+    }
+
+    .status {
+      min-height: 1.25rem;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    @media (min-width: 720px) {
+      main {
+        padding: 2rem;
+      }
+
+      .shell {
+        padding-top: 1.25rem;
+      }
+
+      .workspace {
+        grid-template-columns: minmax(18rem, 23rem) minmax(0, 1fr);
+        gap: 1.25rem;
+      }
+
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .panel,
+      .preview {
+        padding: 1.15rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="shell">
+      <header class="hero">
+        <div class="title-row">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 48 48">
+              <rect x="7" y="7" width="12" height="12" rx="2.2" fill="#15181d"></rect>
+              <rect x="29" y="7" width="12" height="12" rx="2.2" fill="#1769e0"></rect>
+              <rect x="7" y="29" width="12" height="12" rx="2.2" fill="#1769e0"></rect>
+              <path d="M29 29h5v5h-5zM36 29h5v5h-5zM29 36h5v5h-5zM36 36h5v5h-5z" fill="#15181d"></path>
+              <rect x="10.5" y="10.5" width="5" height="5" rx="1" fill="#fff"></rect>
+              <rect x="32.5" y="10.5" width="5" height="5" rx="1" fill="#fff"></rect>
+              <rect x="10.5" y="32.5" width="5" height="5" rx="1" fill="#fff"></rect>
+            </svg>
+          </span>
+          <h1>QR Maker</h1>
+        </div>
+        <p class="tagline">Create a scannable PNG QR code with a clean white rounded background.</p>
+      </header>
+
+      <section class="workspace" aria-label="QR code generator">
+        <form class="panel" id="qr-form">
+          <div class="section">
+            <div class="field">
+              <label for="url-input">URL</label>
+              <input id="url-input" type="url" inputmode="url" autocomplete="url" placeholder="https://example.com" required>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>PNG</h2>
+            <div class="grid">
+              <div class="field">
+                <label for="size-select">Size</label>
+                <select id="size-select">
+                  <option value="512">512 px</option>
+                  <option value="1024" selected>1024 px</option>
+                  <option value="1536">1536 px</option>
+                  <option value="2048">2048 px</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="color-input">QR color</label>
+                <input id="color-input" type="color" value="#15181d">
+              </div>
+            </div>
+            <div class="field">
+              <div class="range-top">
+                <label for="padding-input">Padding</label>
+                <span class="range-value" id="padding-value">96 px</span>
+              </div>
+              <input id="padding-input" type="range" min="32" max="256" step="8" value="96">
+            </div>
+            <div class="field">
+              <div class="range-top">
+                <label for="radius-input">Corner radius</label>
+                <span class="range-value" id="radius-value">96 px</span>
+              </div>
+              <input id="radius-input" type="range" min="0" max="256" step="8" value="96">
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="button" type="submit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+              Generate
+            </button>
+            <button class="button secondary" id="download-button" type="button" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M12 3v12"></path>
+                <path d="m7 10 5 5 5-5"></path>
+                <path d="M5 21h14"></path>
+              </svg>
+              Download PNG
+            </button>
+          </div>
+          <p class="status" id="status" role="status" aria-live="polite"></p>
+        </form>
+
+        <section class="preview" aria-label="QR preview">
+          <div class="preview-head">
+            <h2>Preview</h2>
+            <p class="meta" id="meta">1024 px PNG</p>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="output-canvas" width="1024" height="1024"></canvas>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const form = document.querySelector("#qr-form");
+    const urlInput = document.querySelector("#url-input");
+    const sizeSelect = document.querySelector("#size-select");
+    const colorInput = document.querySelector("#color-input");
+    const paddingInput = document.querySelector("#padding-input");
+    const radiusInput = document.querySelector("#radius-input");
+    const paddingValue = document.querySelector("#padding-value");
+    const radiusValue = document.querySelector("#radius-value");
+    const downloadButton = document.querySelector("#download-button");
+    const outputCanvas = document.querySelector("#output-canvas");
+    const statusText = document.querySelector("#status");
+    const metaText = document.querySelector("#meta");
+
+    let latestObjectUrl = "";
+    let latestFileName = "qr-code.png";
+    let debounceTimer = 0;
+    function normalizeUrl(value) {
+      const trimmed = value.trim();
+      if (!trimmed) {
+        return "";
+      }
+
+      const candidate = /^[a-z][a-z0-9+.-]*:/i.test(trimmed) ? trimmed : `https://${trimmed}`;
+      return new URL(candidate).href;
+    }
+
+    function setStatus(message, isError = false) {
+      statusText.textContent = message;
+      statusText.classList.toggle("error", isError);
+    }
+
+    function roundedRect(context, x, y, width, height, radius) {
+      const r = Math.min(radius, width / 2, height / 2);
+      context.beginPath();
+      context.moveTo(x + r, y);
+      context.lineTo(x + width - r, y);
+      context.quadraticCurveTo(x + width, y, x + width, y + r);
+      context.lineTo(x + width, y + height - r);
+      context.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+      context.lineTo(x + r, y + height);
+      context.quadraticCurveTo(x, y + height, x, y + height - r);
+      context.lineTo(x, y + r);
+      context.quadraticCurveTo(x, y, x + r, y);
+      context.closePath();
+    }
+
+    function makeFileName(url) {
+      const host = new URL(url).hostname.replace(/^www\./, "");
+      const safeHost = host.replace(/[^a-z0-9-]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
+      return `${safeHost || "link"}-qr.png`;
+    }
+
+    function clearObjectUrl() {
+      if (latestObjectUrl) {
+        URL.revokeObjectURL(latestObjectUrl);
+        latestObjectUrl = "";
+      }
+    }
+
+    function readSettings() {
+      const size = Number(sizeSelect.value) || DEFAULT_SIZE;
+      const padding = Math.min(Number(paddingInput.value) || DEFAULT_PADDING, Number(paddingInput.max));
+      const radius = Math.min(Number(radiusInput.value) || DEFAULT_RADIUS, Number(radiusInput.max));
+
+      return {
+        size,
+        padding,
+        radius,
+        qrColor: colorInput.value || DEFAULT_QR_COLOR
+      };
+    }
+
+    async function drawQr() {
+      if (!window.QRCode) {
+        setStatus("QR library is still loading. Try again in a moment.", true);
+        return;
+      }
+
+      let url;
+      try {
+        url = normalizeUrl(urlInput.value);
+      } catch (error) {
+        downloadButton.disabled = true;
+        setStatus("Enter a valid URL.", true);
+        return;
+      }
+
+      if (!url) {
+        downloadButton.disabled = true;
+        setStatus("Enter a URL to generate a QR code.");
+        return;
+      }
+
+      const settings = readSettings();
+      const { size, padding, radius, qrColor } = settings;
+      const qrSize = Math.max(96, size - padding * 2);
+      const tempHolder = document.createElement("div");
+      tempHolder.style.position = "fixed";
+      tempHolder.style.left = "-9999px";
+      tempHolder.style.top = "0";
+      document.body.appendChild(tempHolder);
+
+      new QRCode(tempHolder, {
+        text: url,
+        width: qrSize,
+        height: qrSize,
+        colorDark: qrColor,
+        colorLight: BACKGROUND_COLOR,
+        correctLevel: QRCode.CorrectLevel[ERROR_CORRECTION_LEVEL]
+      });
+
+      const tempCanvas = tempHolder.querySelector("canvas");
+      const tempImage = tempHolder.querySelector("img");
+      const qrSource = tempCanvas || tempImage;
+
+      if (!qrSource) {
+        tempHolder.remove();
+        throw new Error("QR renderer did not produce a drawable image.");
+      }
+
+      outputCanvas.width = size;
+      outputCanvas.height = size;
+      const context = outputCanvas.getContext("2d");
+
+      context.clearRect(0, 0, size, size);
+      context.save();
+      roundedRect(context, 0, 0, size, size, radius);
+      context.fillStyle = BACKGROUND_COLOR;
+      context.fill();
+      context.clip();
+      context.drawImage(qrSource, padding, padding, qrSize, qrSize);
+      context.restore();
+      tempHolder.remove();
+
+      clearObjectUrl();
+      const blob = await new Promise((resolve) => outputCanvas.toBlob(resolve, "image/png"));
+      latestObjectUrl = URL.createObjectURL(blob);
+      latestFileName = makeFileName(url);
+      downloadButton.disabled = false;
+      metaText.textContent = `${size} px PNG`;
+      setStatus("Ready to download.");
+    }
+
+    function scheduleDraw() {
+      window.clearTimeout(debounceTimer);
+      debounceTimer = window.setTimeout(() => {
+        drawQr().catch(() => {
+          downloadButton.disabled = true;
+          setStatus("Could not generate this QR code.", true);
+        });
+      }, 180);
+    }
+
+    function syncControlLimits() {
+      const size = Number(sizeSelect.value) || DEFAULT_SIZE;
+      const maxPadding = Math.floor((size / 3) / 8) * 8;
+      const maxRadius = Math.floor((size / 2) / 8) * 8;
+
+      paddingInput.max = String(maxPadding);
+      radiusInput.max = String(maxRadius);
+
+      if (Number(paddingInput.value) > maxPadding) {
+        paddingInput.value = String(maxPadding);
+      }
+
+      if (Number(radiusInput.value) > maxRadius) {
+        radiusInput.value = String(maxRadius);
+      }
+    }
+
+    function syncLabels() {
+      syncControlLimits();
+      paddingValue.textContent = `${paddingInput.value} px`;
+      radiusValue.textContent = `${radiusInput.value} px`;
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      syncLabels();
+      drawQr().catch(() => {
+        downloadButton.disabled = true;
+        setStatus("Could not generate this QR code.", true);
+      });
+    });
+
+    [urlInput, sizeSelect, colorInput, paddingInput, radiusInput].forEach((control) => {
+      control.addEventListener("input", () => {
+        syncLabels();
+        scheduleDraw();
+      });
+    });
+
+    downloadButton.addEventListener("click", () => {
+      if (!latestObjectUrl) {
+        return;
+      }
+
+      const link = document.createElement("a");
+      link.href = latestObjectUrl;
+      link.download = latestFileName;
+      link.click();
+    });
+
+    window.addEventListener("pagehide", clearObjectUrl);
+    window.addEventListener("load", () => {
+      urlInput.value = DEFAULT_URL;
+      colorInput.value = DEFAULT_QR_COLOR;
+      paddingInput.value = String(DEFAULT_PADDING);
+      radiusInput.value = String(DEFAULT_RADIUS);
+      syncLabels();
+      drawQr().catch(() => {
+        setStatus("Could not load the QR generator.", true);
+      });
+    });
+  </script>
+</body>
+</html>

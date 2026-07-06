@@ -57,6 +57,13 @@
       "description": "Map nearby Montevideo street markets.",
       "url": "/ferias-vecinales/",
       "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "QR Maker",
+      "short_name": "QR",
+      "description": "Generate rounded white PNG QR codes.",
+      "url": "/qr-code/",
+      "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }

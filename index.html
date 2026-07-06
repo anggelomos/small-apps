@@ -188,6 +188,30 @@
       box-shadow: 0 22px 60px rgba(23, 105, 224, 0.12);
     }
 
+    .qr-icon {
+      background: #ffffff !important;
+      box-shadow:
+        inset 0 0 0 1px #ececef,
+        0 8px 20px rgba(20, 30, 60, 0.07) !important;
+    }
+
+    .qr-mark {
+      width: 2.78rem;
+      height: 2.78rem;
+    }
+
+    .qr-mark rect,
+    .qr-mark path {
+      vector-effect: non-scaling-stroke;
+    }
+
+    .app-card.qr-card:hover,
+    .app-card.qr-card:focus-visible {
+      border-color: rgba(23, 105, 224, 0.45);
+      background: #f8fbff;
+      box-shadow: 0 22px 60px rgba(23, 105, 224, 0.12);
+    }
+
     .app-card strong {
       display: block;
       margin-bottom: 0.3rem;
@@ -272,6 +296,24 @@
         <span class="app-copy">
           <strong>Ferias Vecinales</strong>
           <span>Map nearby Montevideo street markets and schedules.</span>
+        </span>
+      </a>
+
+      <a class="app-card qr-card" href="/qr-code/">
+        <span class="icon qr-icon" aria-hidden="true">
+          <svg class="qr-mark" viewBox="0 0 48 48">
+            <rect x="7" y="7" width="12" height="12" rx="2.2" fill="#15181d"></rect>
+            <rect x="29" y="7" width="12" height="12" rx="2.2" fill="#1769e0"></rect>
+            <rect x="7" y="29" width="12" height="12" rx="2.2" fill="#1769e0"></rect>
+            <path d="M29 29h5v5h-5zM36 29h5v5h-5zM29 36h5v5h-5zM36 36h5v5h-5z" fill="#15181d"></path>
+            <rect x="10.5" y="10.5" width="5" height="5" rx="1" fill="#fff"></rect>
+            <rect x="32.5" y="10.5" width="5" height="5" rx="1" fill="#fff"></rect>
+            <rect x="10.5" y="32.5" width="5" height="5" rx="1" fill="#fff"></rect>
+          </svg>
+        </span>
+        <span class="app-copy">
+          <strong>QR Maker</strong>
+          <span>Generate rounded white PNG QR codes from URLs.</span>
         </span>
       </a>
     </section>
