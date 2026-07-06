@@ -16,8 +16,8 @@
   <script>
     const DEFAULT_URL = "https://ang-small-apps.vercel.app/";
     const DEFAULT_SIZE = 1024;
-    const DEFAULT_PADDING = 96;
-    const DEFAULT_RADIUS = 96;
+    const DEFAULT_PADDING = 64;
+    const DEFAULT_RADIUS = 64;
     const DEFAULT_QR_COLOR = "#15181d";
     const BACKGROUND_COLOR = "#ffffff";
     const ERROR_CORRECTION_LEVEL = "M";
@@ -415,16 +415,16 @@
             <div class="field">
               <div class="range-top">
                 <label for="padding-input">Padding</label>
-                <span class="range-value" id="padding-value">96 px</span>
+                <span class="range-value" id="padding-value">64 px</span>
               </div>
-              <input id="padding-input" type="range" min="32" max="256" step="8" value="96">
+              <input id="padding-input" type="range" min="32" max="256" step="8" value="64">
             </div>
             <div class="field">
               <div class="range-top">
                 <label for="radius-input">Corner radius</label>
-                <span class="range-value" id="radius-value">96 px</span>
+                <span class="range-value" id="radius-value">64 px</span>
               </div>
-              <input id="radius-input" type="range" min="0" max="256" step="8" value="96">
+              <input id="radius-input" type="range" min="0" max="256" step="8" value="64">
             </div>
           </div>
 
