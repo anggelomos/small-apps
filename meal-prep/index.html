@@ -31,6 +31,7 @@
       chicken: { label: { raw: "raw chicken", cooked: "chicken" }, unit: "g" },
       beef: { label: { raw: "raw beef", cooked: "beef" }, unit: "g" },
       fish: { label: { raw: "raw fish", cooked: "fish" }, unit: "g" },
+      salmon: { label: { raw: "raw salmon", cooked: "salmon" }, unit: "g" },
       vegetables: { label: { raw: "vegetables", cooked: "vegetables" }, unit: "g" }
     };
 
@@ -73,37 +74,23 @@
           { id: "vegetables", amount: { raw: 100, cooked: 100 } }
         ]
       },
-      chickenDinner: {
-        label: "Chicken dinner",
+      salmonDinner: {
+        label: "Salmon dinner",
         ingredients: [
           { id: "vegetables", amount: { raw: 50, cooked: 50 } },
-          { id: "chicken", amount: { raw: 270, cooked: 200 } }
-        ]
-      },
-      beefDinner: {
-        label: "Beef dinner",
-        ingredients: [
-          { id: "vegetables", amount: { raw: 50, cooked: 50 } },
-          { id: "beef", amount: { raw: 280, cooked: 200 } }
-        ]
-      },
-      fishDinner: {
-        label: "Fish dinner",
-        ingredients: [
-          { id: "vegetables", amount: { raw: 50, cooked: 50 } },
-          { id: "fish", amount: { raw: 250, cooked: 200 } }
+          { id: "salmon", amount: { raw: 250, cooked: 200 } }
         ]
       }
     };
 
     const WEEK_PLAN = {
-      Monday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "chickenLunch", "Snack 2": "snack", Dinner: "chickenDinner" },
-      Tuesday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "chickenLunch", "Snack 2": "snack", Dinner: "chickenDinner" },
-      Wednesday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "chickenLunch", "Snack 2": "snack", Dinner: "chickenDinner" },
-      Thursday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "beefLunch", "Snack 2": "snack", Dinner: "beefDinner" },
-      Friday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "fishLunch", "Snack 2": "snack", Dinner: "fishDinner" },
+      Monday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "chickenLunch", "Snack 2": "snack", Dinner: "salmonDinner" },
+      Tuesday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "chickenLunch", "Snack 2": "snack", Dinner: "salmonDinner" },
+      Wednesday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "chickenLunch", "Snack 2": "snack", Dinner: "salmonDinner" },
+      Thursday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "beefLunch", "Snack 2": "snack", Dinner: "salmonDinner" },
+      Friday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "fishLunch", "Snack 2": "snack", Dinner: "salmonDinner" },
       Saturday: { Breakfast: null, "Snack 1": null, Lunch: null, "Snack 2": null, Dinner: null },
-      Sunday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "fishLunch", "Snack 2": "snack", Dinner: "fishDinner" }
+      Sunday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "fishLunch", "Snack 2": "snack", Dinner: "salmonDinner" }
     };
   </script>
   <style>
