@@ -37,6 +37,7 @@
       frozenFries: { label: { raw: "frozen fries", cooked: "frozen fries" }, unit: "g" },
       nutriKaruMeal: { label: { raw: "NutriKarú lunch", cooked: "NutriKarú lunch" }, unit: "unit" },
       restaurantMeal: { label: { raw: "balanced restaurant lunch", cooked: "balanced restaurant lunch" }, unit: "unit" },
+      cheatMeal: { label: { raw: "cheat meal", cooked: "cheat meal" }, unit: "unit" },
       salmon: { label: { raw: "raw salmon", cooked: "salmon" }, unit: "g" }
     };
 
@@ -74,6 +75,10 @@
         label: "Balanced restaurant lunch",
         ingredients: [{ id: "restaurantMeal", amount: { raw: 1, cooked: 1 } }]
       },
+      cheatMeal: {
+        label: "Cheat meal",
+        ingredients: [{ id: "cheatMeal", amount: { raw: 1, cooked: 1 } }]
+      },
       salmonDinner: {
         label: "Salmon dinner",
         ingredients: [
@@ -91,7 +96,7 @@
       Wednesday: { Breakfast: "breakfast", "Snack 1": "morningYogurt", Lunch: "nutriKaruLunch", "Snack 2": "afternoonLatte", Dinner: "salmonDinner" },
       Thursday: { Breakfast: "breakfast", "Snack 1": "morningYogurt", Lunch: "nutriKaruLunch", "Snack 2": "afternoonLatte", Dinner: "salmonDinner" },
       Friday: { Breakfast: "breakfast", "Snack 1": "morningYogurt", Lunch: "nutriKaruLunch", "Snack 2": "afternoonLatte", Dinner: "salmonDinner" },
-      Saturday: { Breakfast: "breakfast", "Snack 1": "morningYogurt", Lunch: null, "Snack 2": "afternoonLatte", Dinner: "salmonDinner" },
+      Saturday: { Breakfast: "breakfast", "Snack 1": "morningYogurt", Lunch: "cheatMeal", "Snack 2": "afternoonLatte", Dinner: "salmonDinner" },
       Sunday: { Breakfast: "breakfast", "Snack 1": "morningYogurt", Lunch: "restaurantLunch", "Snack 2": "afternoonLatte", Dinner: "salmonDinner" }
     };
   </script>
