@@ -24,73 +24,75 @@
     };
 
     const INGREDIENTS = {
-      eggs: { label: { raw: "scrambled eggs", cooked: "scrambled eggs" }, unit: "unit" },
+      eggs: { label: { raw: "eggs", cooked: "scrambled eggs" }, unit: "unit" },
       greekYogurt: { label: { raw: "Greek yogurt", cooked: "Greek yogurt" }, unit: "g" },
       blueberries: { label: { raw: "blueberries", cooked: "blueberries" }, unit: "g" },
-      rice: { label: { raw: "raw rice", cooked: "rice" }, unit: "g" },
-      chicken: { label: { raw: "raw chicken", cooked: "chicken" }, unit: "g" },
-      beef: { label: { raw: "raw beef", cooked: "beef" }, unit: "g" },
-      fish: { label: { raw: "raw fish", cooked: "fish" }, unit: "g" },
-      salmon: { label: { raw: "raw salmon", cooked: "salmon" }, unit: "g" },
-      vegetables: { label: { raw: "vegetables", cooked: "vegetables" }, unit: "g" }
+      oats: { label: { raw: "oats", cooked: "oats" }, unit: "g" },
+      skimMilk: { label: { raw: "iced latte", cooked: "iced latte" }, unit: "ml" },
+      blackberries: { label: { raw: "blackberries", cooked: "blackberries" }, unit: "g" },
+      sugarFreeGelatin: { label: { raw: "sugar-free gelatin", cooked: "sugar-free gelatin" }, unit: "g" },
+      wholeWheatBread: { label: { raw: "whole-wheat bread", cooked: "whole-wheat bread" }, unit: "g" },
+      oliveOil: { label: { raw: "olive oil", cooked: "olive oil" }, unit: "g" },
+      frozenVegetables: { label: { raw: "vegetables", cooked: "vegetables" }, unit: "g" },
+      frozenFries: { label: { raw: "frozen fries", cooked: "frozen fries" }, unit: "g" },
+      nutriKaruMeal: { label: { raw: "NutriKarú lunch", cooked: "NutriKarú lunch" }, unit: "unit" },
+      restaurantMeal: { label: { raw: "balanced restaurant lunch", cooked: "balanced restaurant lunch" }, unit: "unit" },
+      salmon: { label: { raw: "raw salmon", cooked: "salmon" }, unit: "g" }
     };
 
     const RECIPES = {
       breakfast: {
-        label: "Breakfast",
+        label: "Egg breakfast",
         ingredients: [
-          { id: "eggs", amount: { raw: 2, cooked: 2 } },
-          { id: "vegetables", amount: { raw: 100, cooked: 100 } }
+          { id: "eggs", amount: { raw: 3, cooked: 3 } },
+          { id: "frozenVegetables", amount: { raw: 175, cooked: 175 } },
+          { id: "wholeWheatBread", amount: { raw: 32, cooked: 32 } },
+          { id: "oliveOil", amount: { raw: 5, cooked: 5 } }
         ]
       },
-      snack: {
-        label: "Snack",
+      morningYogurt: {
+        label: "Yogurt and blueberry bowl",
         ingredients: [
           { id: "greekYogurt", amount: { raw: 100, cooked: 100 } },
-          { id: "blueberries", amount: { raw: 50, cooked: 50 } }
+          { id: "blueberries", amount: { raw: 81, cooked: 81 } },
+          { id: "oats", amount: { raw: 24, cooked: 24 } }
         ]
       },
-      chickenLunch: {
-        label: "Chicken lunch",
+      afternoonLatte: {
+        label: "Cold latte snack",
         ingredients: [
-          { id: "rice", amount: { raw: 23, cooked: 70 } },
-          { id: "chicken", amount: { raw: 340, cooked: 250 } },
-          { id: "vegetables", amount: { raw: 100, cooked: 100 } }
+          { id: "skimMilk", amount: { raw: 100, cooked: 100 } },
+          { id: "blackberries", amount: { raw: 96, cooked: 96 } },
+          { id: "sugarFreeGelatin", amount: { raw: 120, cooked: 120 } }
         ]
       },
-      beefLunch: {
-        label: "Beef lunch",
-        ingredients: [
-          { id: "rice", amount: { raw: 23, cooked: 70 } },
-          { id: "beef", amount: { raw: 350, cooked: 250 } },
-          { id: "vegetables", amount: { raw: 100, cooked: 100 } }
-        ]
+      nutriKaruLunch: {
+        label: "NutriKarú lunch",
+        ingredients: [{ id: "nutriKaruMeal", amount: { raw: 1, cooked: 1 } }]
       },
-      fishLunch: {
-        label: "Fish lunch",
-        ingredients: [
-          { id: "rice", amount: { raw: 23, cooked: 70 } },
-          { id: "fish", amount: { raw: 315, cooked: 250 } },
-          { id: "vegetables", amount: { raw: 100, cooked: 100 } }
-        ]
+      restaurantLunch: {
+        label: "Balanced restaurant lunch",
+        ingredients: [{ id: "restaurantMeal", amount: { raw: 1, cooked: 1 } }]
       },
       salmonDinner: {
         label: "Salmon dinner",
         ingredients: [
-          { id: "vegetables", amount: { raw: 100, cooked: 100 } },
-          { id: "salmon", amount: { raw: 250, cooked: 200 } }
+          { id: "frozenVegetables", amount: { raw: 230, cooked: 230 } },
+          { id: "salmon", amount: { raw: 250, cooked: 200 } },
+          { id: "frozenFries", amount: { raw: 83, cooked: 83 } },
+          { id: "oliveOil", amount: { raw: 5, cooked: 5 } }
         ]
       }
     };
 
     const WEEK_PLAN = {
-      Monday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "chickenLunch", "Snack 2": "snack", Dinner: "salmonDinner" },
-      Tuesday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "chickenLunch", "Snack 2": "snack", Dinner: "salmonDinner" },
-      Wednesday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "chickenLunch", "Snack 2": "snack", Dinner: "salmonDinner" },
-      Thursday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "beefLunch", "Snack 2": "snack", Dinner: "salmonDinner" },
-      Friday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "fishLunch", "Snack 2": "snack", Dinner: "salmonDinner" },
-      Saturday: { Breakfast: null, "Snack 1": null, Lunch: null, "Snack 2": null, Dinner: "salmonDinner" },
-      Sunday: { Breakfast: "breakfast", "Snack 1": "snack", Lunch: "fishLunch", "Snack 2": "snack", Dinner: "salmonDinner" }
+      Monday: { Breakfast: "breakfast", "Snack 1": "morningYogurt", Lunch: "nutriKaruLunch", "Snack 2": "afternoonLatte", Dinner: "salmonDinner" },
+      Tuesday: { Breakfast: "breakfast", "Snack 1": "morningYogurt", Lunch: "nutriKaruLunch", "Snack 2": "afternoonLatte", Dinner: "salmonDinner" },
+      Wednesday: { Breakfast: "breakfast", "Snack 1": "morningYogurt", Lunch: "nutriKaruLunch", "Snack 2": "afternoonLatte", Dinner: "salmonDinner" },
+      Thursday: { Breakfast: "breakfast", "Snack 1": "morningYogurt", Lunch: "nutriKaruLunch", "Snack 2": "afternoonLatte", Dinner: "salmonDinner" },
+      Friday: { Breakfast: "breakfast", "Snack 1": "morningYogurt", Lunch: "nutriKaruLunch", "Snack 2": "afternoonLatte", Dinner: "salmonDinner" },
+      Saturday: { Breakfast: "breakfast", "Snack 1": "morningYogurt", Lunch: null, "Snack 2": "afternoonLatte", Dinner: "salmonDinner" },
+      Sunday: { Breakfast: "breakfast", "Snack 1": "morningYogurt", Lunch: "restaurantLunch", "Snack 2": "afternoonLatte", Dinner: "salmonDinner" }
     };
   </script>
   <style>
@@ -868,6 +870,12 @@
     let totalViewMode = "week";
     let currentDayIndex = 0;
     const disabledCells = new Set();
+
+    DAYS.forEach((day) => {
+      if (WEEK_PLAN[day]?.Lunch) {
+        disabledCells.add(`${day}::Lunch`);
+      }
+    });
 
     function cellKey(day, meal) {
       return `${day}::${meal}`;

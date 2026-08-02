@@ -1,4 +1,4 @@
-const CACHE_VERSION = "small-apps-v5";
+const CACHE_VERSION = "small-apps-v6";
 const APP_SHELL = [
   "/",
   "/index.html",
